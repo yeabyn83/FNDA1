@@ -299,6 +299,39 @@
             setupEventListeners();
         });
 
+        function loadData(rawData) {
+            dataset = rawData.map((item, idx) => {
+                // Handle flexible keys (Korean column names)
+                let rawDate = item['일자'] || item['날짜'] || item['date'] || item[Object.keys(item)[0]];
+                let store = item['점포'] || item['지점'] || item['store'] || '본점';
+                let category = item['카테고리'] || item['분류'] || item['category'] || '기타';
+                let code = item['상품코드'] || item['코드'] || item['code'] || `P-${100 + idx}`;
+                let name = item['상품명'] || item['품명'] || item['name'] || `상품 ${idx + 1}`;
+                let qty = parseFloat(item['판매수량'] || item['수량'] || item['qty'] || 1);
+                let price = parseFloat(item['정상단가'] || item['단가'] || item['price'] || 0);
+                let discount = parseFloat(item['할인액'] || item['할인'] || item['discount'] || 0);
+                let revenue = parseFloat(item['매출액'] || item['매출'] || item['revenue'] || (qty * price - discount));
+                let promo = String(item['행사적용'] || item['행사'] || item['promo'] || 'N').trim().toUpperCase();
+
+                return {
+                    일자: formatDateToYYYYMMDD(rawDate, idx),
+                    점포: String(store).trim(),
+                    카테고리: String(category).trim(),
+                    상품코드: String(code).trim(),
+                    상품명: String(name).trim(),
+                    판매수량: isNaN(qty) ? 0 : qty,
+                    정상단가: isNaN(price) ? 0 : price,
+                    할인액: isNaN(discount) ? 0 : discount,
+                    매출액: isNaN(revenue) ? (qty * price - discount) : revenue,
+                    행사적용: promo === 'Y' || promo === 'TRUE' || promo === 'O' || promo === 'YES' ? 'Y' : 'N'
+                };
+            });
+
+            populateFilterDropdowns();
+            setDateRangeLimits();
+            applyFilters();
+        }
+
         function formatDateToYYYYMMDD(val, index = 0) {
             if (!val) return '2026-10-01';
             let str = String(val).trim();
@@ -333,75 +366,30 @@
             return str;
         }
 
-        // Format Number to KRW Currency
-        function formatNumber(num) {
-            return new Intl.NumberFormat('ko-KR').format(num || 0);
-        }
-
-        // Load and Normalize Raw Data
-        function loadData(rawData) {
-            dataset = rawData.map((row, idx) => {
-                // Support multiple possible column naming keys from Excel/CSV uploads
-                const dateRaw = row['일자'] || row['Date'] || row['날짜'] || '';
-                const store = row['점포'] || row['Store'] || '기본점포';
-                const category = row['카테고리'] || row['Category'] || '기타';
-                const code = row['상품코드'] || row['Code'] || '-';
-                const name = row['상품명'] || row['Name'] || '미지정 상품';
-                
-                const qty = parseInt(row['판매수량'] || row['Qty'] || 0, 10);
-                const price = parseInt(row['정상단가'] || row['Price'] || 0, 10);
-                const discount = parseInt(row['할인액'] || row['Discount'] || 0, 10);
-                let sales = parseInt(row['매출액'] || row['Sales'] || 0, 10);
-
-                if (!sales && qty && price) {
-                    sales = (qty * price) - discount;
-                }
-
-                const promo = (row['행사적용'] || row['Promo'] || 'N').toString().trim().toUpperCase();
-
-                return {
-                    일자: formatDateToYYYYMMDD(dateRaw, idx),
-                    점포: store,
-                    카테고리: category,
-                    상품코드: code,
-                    상품명: name,
-                    판매수량: isNaN(qty) ? 0 : qty,
-                    정상단가: isNaN(price) ? 0 : price,
-                    할인액: isNaN(discount) ? 0 : discount,
-                    매출액: isNaN(sales) ? 0 : sales,
-                    행사적용: promo === 'Y' || promo === '1' || promo === 'TRUE' ? 'Y' : 'N'
-                };
-            }).filter(item => item.일자 !== '');
-
-            populateFilterDropdowns();
-            setDateRangeLimits();
-            applyFilters();
-        }
-
+        // Populate dropdown options dynamically from dataset
         function populateFilterDropdowns() {
+            const stores = [...new Set(dataset.map(d => d.점포))].filter(Boolean).sort();
+            const categories = [...new Set(dataset.map(d => d.카테고리))].filter(Boolean).sort();
+
             const storeSelect = document.getElementById('storeSelect');
+            storeSelect.innerHTML = '<option value="ALL">모든 점포</option>' + 
+                stores.map(s => `<option value="${s}">${s}</option>`).join('');
+
             const categorySelect = document.getElementById('categorySelect');
-
-            const stores = ['ALL', ...new Set(dataset.map(d => d.점포))];
-            const categories = ['ALL', ...new Set(dataset.map(d => d.카테고리))];
-
-            storeSelect.innerHTML = stores.map(s => `<option value="${s}">${s === 'ALL' ? '모든 점포' : s}</option>`).join('');
-            categorySelect.innerHTML = categories.map(c => `<option value="${c}">${c === 'ALL' ? '모든 카테고리' : c}</option>`).join('');
+            categorySelect.innerHTML = '<option value="ALL">모든 카테고리</option>' + 
+                categories.map(c => `<option value="${c}">${c}</option>`).join('');
         }
 
+        // Set date filter inputs dynamically to cover all loaded data (August, September, October, etc.)
         function setDateRangeLimits() {
             if (dataset.length === 0) return;
-            // Extract all unique dates and sort chronologically
-            const dates = [...new Set(dataset.map(d => d.일자))].filter(Boolean).sort();
-            if (dates.length === 0) return;
-
+            const dates = dataset.map(d => d.일자).filter(Boolean).sort();
             const minDate = dates[0];
             const maxDate = dates[dates.length - 1];
 
             const startDateInput = document.getElementById('startDate');
             const endDateInput = document.getElementById('endDate');
 
-            // Dynamically set HTML datepicker min and max boundaries based on full dataset
             startDateInput.min = minDate;
             startDateInput.max = maxDate;
             endDateInput.min = minDate;
@@ -410,15 +398,26 @@
             startDateInput.value = minDate;
             endDateInput.value = maxDate;
 
-            // Display overall dataset date span label
-            const rangeLabel = document.getElementById('dataDateRangeText');
-            if (rangeLabel) {
-                rangeLabel.textContent = `전체 데이터 기간: ${minDate} ~ ${maxDate}`;
-            }
+            document.getElementById('dataDateRangeText').textContent = `데이터 기간: ${minDate} ~ ${maxDate}`;
         }
 
         // Format Number to KRW Currency
         function formatNumber(num) {
+            return new Intl.NumberFormat('ko-KR').format(num || 0);
+        }
+
+        function applyFilters() {
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            const selectedStore = document.getElementById('storeSelect').value;
+            const selectedCategory = document.getElementById('categorySelect').value;
+            const searchKeyword = document.getElementById('searchInput').value.toLowerCase().trim();
+
+            filteredDataset = dataset.filter(item => {
+                // Date range filter
+                if (startDate && item.일자 < startDate) return false;
+                if (endDate && item.일자 > endDate) return false;
+
                 // Store filter
                 if (selectedStore !== 'ALL' && item.점포 !== selectedStore) return false;
 
