@@ -1,939 +1,608 @@
 <!DOCTYPE html>
 <html lang="ko">
-
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>이마트 센트럴점 | 데이터 기반 냉장 간편식 20% 프로모션 & 리포트</title>
-  <meta name="description" content="설문조사 데이터 기반 고객 맞춤형 20% 파격 할인! 이마트 센트럴점 단독 냉장 간편식 3종 골라담기 프로모션 및 데이터 인사이트 대시보드">
-  <meta property="og:title" content="[이마트 센트럴점] 내 맘대로 골라 담는 간편식 20% 파격 할인 & 데이터 기획서">
-  <meta property="og:description" content="전 조합 9천원대, 1끼 4천원대 실현! 데이터 기반 기획 배경과 실시간 조합 계산기.">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>이마트 센트럴점 | 오늘의 간편식, 내 맘대로 골라 담는 20% 파격 할인!</title>
+  <meta name="description" content="이마트 센트럴점 단독 특가! 인기 냉장 간편식 3종 중 원하는 2개를 자유롭게 골라 담으면 20% 즉시 할인! 전 조합 9천원대, 1끼 4천원대 실속 혜택을 매일 점심 12시 선착순 20세트로 만나보세요.">
+  <meta property="og:title" content="[이마트 센트럴점] 오늘의 간편식, 내 맘대로 골라 담는 20% 파격 할인!">
+  <meta property="og:description" content="원하는 2종을 고르면 전 조합 9천원대! 매일 점심 12시 선착순 20세트 타임어택. 지금 나의 맞춤 조합을 계산해보세요.">
   <meta property="og:image" content="./간편식 20% 할인 이벤트.png">
   <meta property="og:type" content="website">
 
-  <!-- Modern Fonts (Pretendard & Outfit) -->
-  <link rel="stylesheet" as="style" crossorigin
-    href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <!-- Fonts -->
+  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;700;800;900&family=Noto+Sans+KR:wght@400;500;700;800;900&display=swap"
-    rel="stylesheet">
-
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;800;900&family=Noto+Sans+KR:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-  <!-- Header / Navigation Bar with View Mode Switcher -->
+
+  <!-- Header -->
   <header class="app-header">
-    <div class="header-container">
-      <div class="brand-group">
-        <span class="emart-logo">emart</span>
-        <span class="store-badge">센트럴점 단독</span>
+    <div class="header-inner">
+      <div class="header-left">
+        <a href="#hero" class="brand-link">
+          <span class="emart-logo">emart</span>
+          <span class="store-badge">센트럴점 단독 특가</span>
+        </a>
       </div>
-
-      <!-- Navigation Tabs -->
-      <nav class="nav-tabs" aria-label="메인 탭 네비게이션">
-        <button class="nav-tab active" data-tab="promotion" id="tabPromotion">
-          <span class="tab-icon">🛒</span>
-          <span class="tab-label">프로모션 쇼핑</span>
-        </button>
-        <button class="nav-tab" data-tab="data-insight" id="tabData">
-          <span class="tab-icon">📊</span>
-          <span class="tab-label">데이터 기획 배경</span>
-        </button>
-        <button class="nav-tab" data-tab="financial-bep" id="tabBep">
-          <span class="tab-icon">📈</span>
-          <span class="tab-label">손익(BEP) 분석</span>
-        </button>
+      <nav class="header-nav" aria-label="메인 메뉴">
+        <a href="#presets" class="nav-link">추천 조합</a>
+        <a href="#menuGuide" class="nav-link">3종 메뉴 안내</a>
+        <a href="#simulator" class="nav-link highlight">내 맘대로 계산기</a>
+        <a href="#story" class="nav-link">탄생 스토리</a>
+        <a href="#storeGuide" class="nav-link">매대 찾는 법</a>
+        <a href="#faq" class="nav-link">FAQ</a>
       </nav>
-
-      <div class="header-actions">
-        <button id="btnShareTop" class="btn-icon" aria-label="프로모션 공유하기" title="공유하기">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
-            stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="18" cy="5" r="3"></circle>
-            <circle cx="6" cy="12" r="3"></circle>
-            <circle cx="18" cy="19" r="3"></circle>
-            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
-            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+      <div class="header-right">
+        <button id="btnHeaderBarcode" class="btn-header-cta">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+            <path d="M6 8v8"></path><path d="M10 8v8"></path><path d="M14 8v8"></path><path d="M18 8v8"></path>
+          </svg>
+          <span>모바일 할인 바코드</span>
+        </button>
+        <button id="btnShareTop" class="btn-icon-share" aria-label="프로모션 공유하기">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle>
+            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
           </svg>
         </button>
       </div>
     </div>
   </header>
 
-  <main class="page-container">
+  <!-- Top Announcement Bar -->
+  <div class="top-announcement">
+    <div class="announcement-inner">
+      <span class="announce-badge">🎉 센트럴점 단독 특가</span>
+      <span class="announce-text">
+        <strong>매일 점심 12:00 선착순 20세트 한정!</strong> 인기 간편식 3종 중 원하는 2개를 자유롭게 담으면 <strong>20% 즉시 할인 (전 조합 9천원대 실현)</strong>
+      </span>
+    </div>
+  </div>
 
-    <!-- ============================================================== -->
-    <!-- VIEW 1: PROMOTION SHOPPING VIEW                                -->
-    <!-- ============================================================== -->
-    <div class="view-content active" id="view-promotion">
-      <!-- Top Alert Ribbon -->
-      <div class="event-ticker">
-        <div class="ticker-content">
-          <span class="ticker-tag">⚡ 일 6세트 한정</span>
-          <span class="ticker-text">매일 점심 12:00 선착순 타임어택! 3종 중 2개 골라 담으면 20% 즉시 할인 (전 조합 9천원대)</span>
+  <!-- Main 2-Column Layout -->
+  <div class="laptop-layout-container">
+
+    <!-- LEFT: Main Content -->
+    <main class="laptop-main-col">
+
+      <!-- ① Hero Section -->
+      <section class="hero-card-section" id="hero">
+        <div class="hero-top-info">
+          <span class="hero-badge-tag">CENTRAL STORE EVENT</span>
+          <span class="hero-date-badge">2026.10.21(수) ~ 11.03(화) · 14일간 진행</span>
         </div>
-      </div>
 
-      <!-- Hero Section -->
-      <section class="hero-section" id="hero">
-        <div class="hero-visual-card">
-          <div class="hero-badge-wrap">
-            <span class="badge-store">CENTRAL STORE EVENT</span>
-            <span class="badge-period">2026.10.21(수) ~ 11.03(화) · 14일간</span>
-          </div>
-
-          <h1 class="hero-title">
-            오늘의 간편식,<br>
-            <span class="highlight-text">내 맘대로</span> 골라 담자!
-          </h1>
-
-          <!-- Massive Discount Burst -->
-          <div class="discount-burst-container">
-            <div class="burst-sub-top">대상 상품 2개 이상 구매 시</div>
-            <div class="burst-main">
-              <span class="burst-num">20</span>
-              <div class="burst-right">
-                <span class="burst-percent">%</span>
-                <span class="burst-off">OFF</span>
-              </div>
-            </div>
-            <div class="burst-sub-bottom">결제 합계 금액 20% 즉시 할인 (세트당 최대 2,480원 할인)</div>
-          </div>
-
-          <div class="hero-mascot-row">
-            <div class="mascot-tag">
-              <span class="mascot-icon">🐥</span>
-              <span class="mascot-speech">"강제 묶음 탈피! 내가 원하는 2개만 쏙쏙!"</span>
+        <div class="hero-content-grid">
+          <div class="hero-text-area">
+            <h1 class="hero-main-title">
+              오늘의 간편식,<br>
+              <span class="highlight-yellow">내 맘대로</span> 골라 담자!
+            </h1>
+            <p class="hero-desc">
+              강제 묶음 없이 내가 좋아하는 메뉴만 쏙쏙 2개!<br>
+              계산대에서 <strong>합계 금액의 20% 즉시 할인</strong> 혜택을 누려보세요.
+            </p>
+            <div class="hero-speech-bubble">
+              <span class="bubble-icon">🔥</span>
+              <span class="bubble-text"><strong>매일 1만 원 넘는 밥값 고민 끝!</strong> 원하는 2개 골라 9천원대로 오늘 점심 &amp; 저녁 두 끼 완벽 해결!</span>
             </div>
           </div>
-
-          <!-- Time Attack Countdown Panel -->
-          <div class="timeattack-box">
-            <div class="ta-header">
-              <div class="ta-title-wrap">
-                <span class="live-dot"></span>
-                <span class="ta-title">매일 점심 12:00 선착순 타임어택</span>
+          <div class="hero-burst-area">
+            <div class="discount-burst-card">
+              <span class="burst-top-text">대상 상품 2개 이상 구매 시</span>
+              <div class="burst-digits">
+                <span class="digit-big">20</span>
+                <div class="digit-unit">
+                  <span class="pct">%</span>
+                  <span class="off">OFF</span>
+                </div>
               </div>
-              <span class="ta-status-tag" id="taStatusBadge">실시간 진행중</span>
+              <span class="burst-sub-text">결제 합계 금액 20% 즉시 할인</span>
+              <span class="burst-highlight-pill">전 조합 9천원대 (세트당 최대 2,480원 할인)</span>
             </div>
+          </div>
+        </div>
 
-            <div class="ta-timer-grid">
-              <div class="timer-unit">
-                <span class="timer-num" id="cdHours">00</span>
-                <span class="timer-lbl">시간</span>
-              </div>
-              <span class="timer-colon">:</span>
-              <div class="timer-unit">
-                <span class="timer-num" id="cdMinutes">00</span>
-                <span class="timer-lbl">분</span>
-              </div>
-              <span class="timer-colon">:</span>
-              <div class="timer-unit">
-                <span class="timer-num" id="cdSeconds">00</span>
-                <span class="timer-lbl">초</span>
-              </div>
+        <!-- Time Attack Banner -->
+        <div class="timeattack-banner">
+          <div class="ta-left">
+            <div class="ta-status-row">
+              <span class="pulse-indicator"></span>
+              <strong class="ta-heading">매일 점심 12:00 선착순 타임어택</strong>
+              <span class="ta-live-pill" id="taStatusBadge">실시간 진행중</span>
             </div>
+            <div class="ta-subtext">센트럴점 냉장 매대 골든존에서 매일 선착순 20세트 한정 제공됩니다.</div>
+          </div>
+          <div class="ta-center-timer">
+            <div class="timer-box"><span class="t-val" id="cdHours">00</span><span class="t-unit">시간</span></div>
+            <span class="t-sep">:</span>
+            <div class="timer-box"><span class="t-val" id="cdMinutes">00</span><span class="t-unit">분</span></div>
+            <span class="t-sep">:</span>
+            <div class="timer-box"><span class="t-val" id="cdSeconds">00</span><span class="t-unit">초</span></div>
+          </div>
+          <div class="ta-right-stock">
+            <div class="stock-label-row">
+              <span>오늘의 선착순 한정 수량</span>
+              <span class="stock-figures"><strong id="stockLeft">20</strong> / 20 세트 잔여</span>
+            </div>
+            <div class="stock-progress-track">
+              <div class="stock-progress-fill" id="stockBarFill" style="width:100%;"></div>
+            </div>
+          </div>
+        </div>
+      </section>
 
-            <div class="ta-stock-bar">
-              <div class="stock-info">
-                <span>오늘의 선착순 한정 수량 잔여</span>
-                <span class="stock-count"><strong id="stockLeft">6</strong> / 6 세트 잔여 (엄격 통제)</span>
+      <!-- ② 추천 조합 4종 -->
+      <section class="section-block" id="presets">
+        <div class="block-header">
+          <span class="block-sub">고민할 필요 없이 원클릭!</span>
+          <h2 class="block-title">라이프스타일별 4대 인기 조합</h2>
+          <p class="block-caption">가장 사랑받는 조합을 클릭하시면 오른쪽 계산기에 자동으로 세팅됩니다.</p>
+        </div>
+        <div class="preset-grid-4">
+          <button class="preset-box active" data-preset="balance">
+            <div class="preset-header">
+              <span class="p-badge badge-green">① 영양 균형형</span>
+              <span class="p-dc-tag">20% 할인</span>
+            </div>
+            <h3 class="preset-title">샐러드랩 + 불고기덮밥</h3>
+            <p class="preset-summary">점심 든든 고기밥 + 저녁 산뜻 채소랩</p>
+            <div class="preset-price-box">
+              <span class="p-orig">12,100원</span>
+              <span class="p-final">9,680원</span>
+            </div>
+            <div class="preset-per-meal">1끼당 단 4,840원</div>
+          </button>
+          <button class="preset-box" data-preset="tasty">
+            <div class="preset-header">
+              <span class="p-badge badge-orange">② 가성비 균형형</span>
+              <span class="p-dc-tag">20% 할인</span>
+            </div>
+            <h3 class="preset-title">샐러드랩 + 닭갈비볶음밥</h3>
+            <p class="preset-summary">화끈 매콤한 점심 + 가벼운 저녁 식사</p>
+            <div class="preset-price-box">
+              <span class="p-orig">11,700원</span>
+              <span class="p-final">9,360원</span>
+            </div>
+            <div class="preset-per-meal">1끼당 단 4,680원</div>
+          </button>
+          <button class="preset-box" data-preset="hearty">
+            <div class="preset-header">
+              <span class="p-badge badge-blue">③ 든든형 (밥류 2개)</span>
+              <span class="p-dc-tag">20% 할인</span>
+            </div>
+            <h3 class="preset-title">소불고기덮밥 + 닭갈비볶음밥</h3>
+            <p class="preset-summary">점심 덮밥 + 저녁 볶음밥으로 포만감 200%</p>
+            <div class="preset-price-box">
+              <span class="p-orig">11,400원</span>
+              <span class="p-final">9,120원</span>
+            </div>
+            <div class="preset-per-meal">1끼당 단 4,560원 (최저가)</div>
+          </button>
+          <button class="preset-box" data-preset="light">
+            <div class="preset-header">
+              <span class="p-badge badge-purple">④ 가벼운형 (랩 2개)</span>
+              <span class="p-dc-tag">20% 할인</span>
+            </div>
+            <h3 class="preset-title">훈제오리 샐러드랩 2개</h3>
+            <p class="preset-summary">다이어트 &amp; 헬스 식단에 완벽한 산뜻함</p>
+            <div class="preset-price-box">
+              <span class="p-orig">12,400원</span>
+              <span class="p-final">9,920원</span>
+            </div>
+            <div class="preset-per-meal">1끼당 단 4,960원 (최대할인)</div>
+          </button>
+        </div>
+      </section>
+
+      <!-- ③ 3종 메뉴 상세 안내 -->
+      <section class="section-block" id="menuGuide">
+        <div class="block-header">
+          <span class="block-sub">Fresh &amp; Delicious</span>
+          <h2 class="block-title">프로모션 대상 3종 메뉴 상세 안내</h2>
+          <p class="block-caption">식품관에서 매일 당일 신선하게 준비되는 프리미엄 냉장 간편식입니다.</p>
+        </div>
+        <div class="menu-showcase-grid">
+
+          <!-- 메뉴 1: 훈제오리 샐러드랩 -->
+          <div class="menu-detail-card">
+            <div class="menu-img-wrap">
+              <img src="./menu_saladwrap.png" alt="훈제오리 샐러드랩" class="menu-food-img">
+              <span class="menu-tag-pill green">고객 만족도 1위</span>
+            </div>
+            <div class="menu-detail-content">
+              <div class="menu-name-price-block">
+                <h3 class="menu-name">훈제오리 샐러드랩</h3>
+                <span class="menu-price-text">정상가 6,200원</span>
               </div>
-              <div class="stock-track">
-                <div class="stock-fill" id="stockBarFill" style="width: 100%;"></div>
+              <p class="menu-detail-desc">기름기를 쏙 뺀 담백한 훈제오리와 아삭한 양상추, 파프리카, 특제 드레싱의 산뜻한 조합</p>
+              <div class="menu-tip-row">
+                <span class="tip-label">추천 취식 팁</span>
+                <span class="tip-val">냉장 상태 그대로 시원하게 드시면 가장 맛있습니다.</span>
+              </div>
+              <div class="menu-dc-benefit">2개 선택 시 끼당 <strong>4,960원</strong>에 즐기는 프리미엄 식단</div>
+            </div>
+          </div>
+
+          <!-- 메뉴 2: 한끼 소불고기덮밥 -->
+          <div class="menu-detail-card">
+            <div class="menu-img-wrap">
+              <img src="./menu_beefbowl.png" alt="한끼 소불고기덮밥" class="menu-food-img">
+              <span class="menu-tag-pill yellow">든든 고기 한끼</span>
+            </div>
+            <div class="menu-detail-content">
+              <div class="menu-name-price-block">
+                <h3 class="menu-name">한끼 소불고기덮밥</h3>
+                <span class="menu-price-text">정상가 5,900원</span>
+              </div>
+              <p class="menu-detail-desc">부드러운 소고기에 단짠 비법 양념을 더해 갓 지은 밥 위에 듬뿍 올린 정통 불고기덮밥</p>
+              <div class="menu-tip-row">
+                <span class="tip-label">추천 취식 팁</span>
+                <span class="tip-val">전자레인지에 1분 30초~2분 데워 따뜻하게 즐기세요.</span>
+              </div>
+              <div class="menu-dc-benefit">2개 선택 시 끼당 <strong>4,720원</strong>으로 배부른 한 끼 해결</div>
+            </div>
+          </div>
+
+          <!-- 메뉴 3: 매콤 닭갈비볶음밥 -->
+          <div class="menu-detail-card">
+            <div class="menu-img-wrap">
+              <img src="./menu_chickenrice.png" alt="매콤 닭갈비볶음밥" class="menu-food-img">
+              <span class="menu-tag-pill red">화끈 가성비 끝판왕</span>
+            </div>
+            <div class="menu-detail-content">
+              <div class="menu-name-price-block">
+                <h3 class="menu-name">매콤 닭갈비볶음밥</h3>
+                <span class="menu-price-text">정상가 5,500원</span>
+              </div>
+              <p class="menu-detail-desc">불맛 가득 매콤달콤 소스와 쫄깃한 닭갈비 살을 고슬고슬한 밥과 함께 볶아낸 감칠맛 일품 볶음밥</p>
+              <div class="menu-tip-row">
+                <span class="tip-label">추천 취식 팁</span>
+                <span class="tip-val">전자레인지 2분 조리 후 계란후라이를 얹으면 꿀조합!</span>
+              </div>
+              <div class="menu-dc-benefit">2개 선택 시 끼당 <strong>4,400원</strong>으로 실속 극대화</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ④ 탄생 스토리 + 카드뉴스 1~6 -->
+      <section class="section-block" id="story">
+        <div class="block-header">
+          <span class="block-sub">Why We Changed</span>
+          <h2 class="block-title">왜 내 맘대로 골라담는 20% 할인으로 바뀌었을까요?</h2>
+          <p class="block-caption">혼밥을 즐기시는 센트럴점 고객님들의 솔직한 목소리에 귀를 기울였습니다.</p>
+        </div>
+        <div class="story-laptop-layout">
+          <!-- 좌: 인터뷰 & 통계 -->
+          <div class="story-info-panel">
+            <div class="story-speech-card">
+              <span class="quote-mark">"</span>
+              <p class="quote-text">샐러드랩이랑 덮밥을 강제로 묶어 파니까 1만 원이 훌쩍 넘어서 부담스러웠어요. 제가 먹고 싶은 것만 2개 골라서 싸게 살 수 있으면 좋겠어요!</p>
+              <span class="quote-author">- 센트럴점 1인 가구 직장인 고객 인터뷰 중</span>
+            </div>
+            <div class="story-stat-pills">
+              <div class="s-pill"><strong>75%</strong><span>혼자 빠르게 식사 해결</span></div>
+              <div class="s-pill"><strong>65%</strong><span>합리적 가격 시 묶음 구매 의향</span></div>
+              <div class="s-pill"><strong>9천원대</strong><span>전 조합 부담 없는 가격 실현</span></div>
+            </div>
+          </div>
+          <!-- 우: 카드뉴스 1~6 슬라이더 -->
+          <div class="story-slider-panel">
+            <div class="carousel-container">
+              <div class="carousel-track" id="cardNewsTrack">
+                <div class="carousel-slide active" data-index="0">
+                  <img src="./카드뉴스1.avif" alt="카드뉴스 1 - 오늘의 간편식 내 맘대로 골라 담자" class="slide-img" onerror="this.onerror=null;this.src='./카드뉴스2.webp';">
+                  <div class="slide-caption">
+                    <span class="slide-step-pill">01 / 06</span>
+                    <h4>오늘의 간편식, 내 맘대로 골라 담자!</h4>
+                    <p>이마트 센트럴점 단독! 대상 상품 2개 이상 구매 시 20% 즉시 할인 특가 개시!</p>
+                  </div>
+                </div>
+                <div class="carousel-slide" data-index="1">
+                  <img src="./카드뉴스2.webp" alt="카드뉴스 2 - 고객 목소리에 집중했습니다" class="slide-img">
+                  <div class="slide-caption">
+                    <span class="slide-step-pill">02 / 06</span>
+                    <h4>왜 바뀌었을까? 고객 목소리에 집중했습니다!</h4>
+                    <p>혼밥족 75%의 단독 식사 패턴에 맞춰 양과 가격 부담을 전면 덜어드렸습니다.</p>
+                  </div>
+                </div>
+                <div class="carousel-slide" data-index="2">
+                  <img src="./카드뉴스3.webp" alt="카드뉴스 3 - 원하는 2가지를 자유롭게" class="slide-img">
+                  <div class="slide-caption">
+                    <span class="slide-step-pill">03 / 06</span>
+                    <h4>"강제 묶음은 이제 그만!" 원하는 2가지를 자유롭게!</h4>
+                    <p>내가 좋아하는 메뉴로만 쏙쏙 2개 골라 담는 진짜 자율 선택 혜택을 드립니다.</p>
+                  </div>
+                </div>
+                <div class="carousel-slide" data-index="3">
+                  <img src="./카드뉴스4.webp" alt="카드뉴스 4 - 취향대로 고르는 재미" class="slide-img">
+                  <div class="slide-caption">
+                    <span class="slide-step-pill">04 / 06</span>
+                    <h4>취향대로 고르는 재미! 든든하게 VS 가볍게</h4>
+                    <p>어떤 조합을 선택해도 전 조합 9,000원대 실속 가격을 보장합니다.</p>
+                  </div>
+                </div>
+                <div class="carousel-slide" data-index="4">
+                  <img src="./카드뉴스5.webp" alt="카드뉴스 5 - 2개 이상 20% 즉시 할인" class="slide-img">
+                  <div class="slide-caption">
+                    <span class="slide-step-pill">05 / 06</span>
+                    <h4>세트당 최대 2,480원 즉시 할인, 1끼 단 4,000원대!</h4>
+                    <p>삼각김밥 대신 고품질 정통 냉장 간편식으로 든든한 2끼를 챙기세요.</p>
+                  </div>
+                </div>
+                <div class="carousel-slide" data-index="5">
+                  <img src="./카드뉴스6.webp" alt="카드뉴스 6 - 매일 점심 12시 선착순 20세트 타임어택" class="slide-img">
+                  <div class="slide-caption">
+                    <span class="slide-step-pill">06 / 06</span>
+                    <h4>매일 점심 12:00 선착순 20세트 한정 타임어택!</h4>
+                    <p>오직 이마트 센트럴점 냉장 매대 골든존에서만 한정 수량으로 진행됩니다.</p>
+                  </div>
+                </div>
+              </div>
+              <div class="carousel-controls">
+                <button class="btn-caro prev" id="btnPrevSlide" aria-label="이전 카드">&#8249;</button>
+                <div class="carousel-dots" id="carouselDots">
+                  <span class="dot active" data-index="0"></span>
+                  <span class="dot" data-index="1"></span>
+                  <span class="dot" data-index="2"></span>
+                  <span class="dot" data-index="3"></span>
+                  <span class="dot" data-index="4"></span>
+                  <span class="dot" data-index="5"></span>
+                </div>
+                <button class="btn-caro next" id="btnNextSlide" aria-label="다음 카드">&#8250;</button>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- Quick Presets -->
-      <section class="presets-section">
-        <div class="section-heading">
-          <span class="section-sub">라이프스타일 4대 추천 조합</span>
-          <h2 class="section-title">고민 없이 원클릭으로 담기</h2>
+      <!-- ⑤ 매대 찾는 법 -->
+      <section class="section-block" id="storeGuide">
+        <div class="block-header">
+          <span class="block-sub">Where to Find</span>
+          <h2 class="block-title">이마트 센트럴점 매대 찾는 법</h2>
+          <p class="block-caption">매장에 오시면 헤매지 마시고 아래 위치를 바로 찾아보세요!</p>
         </div>
-
-        <div class="preset-scroll-track">
-          <!-- Preset 1 -->
-          <button class="preset-card active" data-preset="balance">
-            <div class="preset-badge badge-green">① 영양 균형형</div>
-            <div class="preset-name">샐러드랩 + 불고기덮밥</div>
-            <div class="preset-desc">점심 든든 고기 밥 + 저녁 산뜻 채소랩</div>
-            <div class="preset-price-wrap">
-              <span class="preset-orig">12,100원</span>
-              <span class="preset-dc">9,680원</span>
+        <div class="store-guide-laptop-grid">
+          <div class="guide-box">
+            <div class="g-icon">📍</div>
+            <div class="g-content">
+              <h3>매장 위치</h3>
+              <p><strong>이마트 센트럴점 B1 식품관</strong><br>신선/냉장 간편식 코너</p>
             </div>
-            <div class="preset-unit-price">1끼당 4,840원 (-20%)</div>
-          </button>
-
-          <!-- Preset 2 -->
-          <button class="preset-card" data-preset="tasty">
-            <div class="preset-badge badge-orange">② 가성비 균형형</div>
-            <div class="preset-name">샐러드랩 + 닭갈비볶음밥</div>
-            <div class="preset-desc">매콤한 점심 + 가벼운 저녁 식사</div>
-            <div class="preset-price-wrap">
-              <span class="preset-orig">11,700원</span>
-              <span class="preset-dc">9,360원</span>
+          </div>
+          <div class="guide-box highlight">
+            <div class="g-icon">⭐</div>
+            <div class="g-content">
+              <h3>골든존 진열 위치 (핵심 팁)</h3>
+              <p>서서 바라보는 <strong>상단 2~3단 눈높이 진열대</strong>에 3종 상품이 나란히 인접 진열되어 있습니다.</p>
             </div>
-            <div class="preset-unit-price">1끼당 4,680원 (-20%)</div>
-          </button>
-
-          <!-- Preset 3 -->
-          <button class="preset-card" data-preset="hearty">
-            <div class="preset-badge badge-blue">③ 든든형 (밥류 2개)</div>
-            <div class="preset-name">덮밥 + 볶음밥</div>
-            <div class="preset-desc">점심 덮밥 + 저녁 볶음밥 (든든한 탄수화물)</div>
-            <div class="preset-price-wrap">
-              <span class="preset-orig">11,400원</span>
-              <span class="preset-dc">9,120원</span>
+          </div>
+          <div class="guide-box">
+            <div class="g-icon">💳</div>
+            <div class="g-content">
+              <h3>자동 20% 즉시 할인</h3>
+              <p>대상 상품 2개 이상을 계산대 POS에 올리시면 <strong>자동 20% 차감</strong>됩니다.</p>
             </div>
-            <div class="preset-unit-price">1끼당 4,560원 (-20%)</div>
-          </button>
-
-          <!-- Preset 4 -->
-          <button class="preset-card" data-preset="light">
-            <div class="preset-badge badge-purple">④ 가벼운형 (랩 2개)</div>
-            <div class="preset-name">샐러드랩 2개</div>
-            <div class="preset-desc">가벼운 점심 + 가벼운 저녁 (다이어트·건강식)</div>
-            <div class="preset-price-wrap">
-              <span class="preset-orig">12,400원</span>
-              <span class="preset-dc">9,920원</span>
+          </div>
+          <div class="guide-box">
+            <div class="g-icon">⏰</div>
+            <div class="g-content">
+              <h3>타임어택 시작</h3>
+              <p><strong>매일 점심 12:00 정각 개시</strong><br>선착순 20세트 소진 시 당일 마감</p>
             </div>
-            <div class="preset-unit-price">1끼당 4,960원 (-20%)</div>
-          </button>
+          </div>
         </div>
       </section>
 
-      <!-- Interactive Combo Simulator -->
-      <section class="simulator-section" id="simulator">
-        <div class="section-heading">
-          <span class="section-sub">내 맘대로 터치해서 담아보세요!</span>
-          <h2 class="section-title">2종 골라담기 실시간 계산기</h2>
-          <p class="section-caption">원하는 상품을 2개 이상 선택하면 자동으로 <strong>20% 즉시 할인</strong>이 적용됩니다. (동일 상품 중복 가능)</p>
+      <!-- ⑥ FAQ -->
+      <section class="section-block" id="faq">
+        <div class="block-header">
+          <span class="block-sub">Notice &amp; FAQ</span>
+          <h2 class="block-title">고객 자주 묻는 질문</h2>
         </div>
-
-        <!-- Product Selection List -->
-        <div class="product-selection-grid">
-          <!-- Item 1: 훈제오리 샐러드랩 -->
-          <div class="sim-product-card" data-id="saladwrap" data-price="6200" data-name="훈제오리 샐러드랩">
-            <div class="sim-card-top">
-              <div class="sim-img-wrap">
-                <img src="./카드뉴스4.webp" alt="훈제오리 샐러드랩" class="sim-thumb" style="object-position: 28% 55%;">
-                <span class="sim-tag">고객 만족도 1위</span>
-              </div>
-              <div class="sim-info">
-                <div class="sim-header-row">
-                  <h3 class="sim-title">훈제오리 샐러드랩</h3>
-                  <span class="sim-stat-pill">매출 -9.38% 집중지원</span>
-                </div>
-                <p class="sim-subtitle">담백한 훈제오리와 신선 아삭한 채소의 산뜻한 조합</p>
-                <div class="sim-price-row">
-                  <span class="sim-regular-price">정상가 <strong>6,200원</strong></span>
-                  <span class="sim-dc-hint">2개 담을 때 끼당 4,960원</span>
-                </div>
-              </div>
-            </div>
-            <div class="sim-card-bottom">
-              <div class="qty-control">
-                <button class="btn-qty minus" data-action="minus" aria-label="수량 감소">-</button>
-                <span class="qty-display" id="qty-saladwrap">1</span>
-                <button class="btn-qty plus" data-action="plus" aria-label="수량 증가">+</button>
-              </div>
-              <div class="item-subtotal" id="subtotal-saladwrap">6,200원</div>
+        <div class="faq-list">
+          <div class="faq-item">
+            <button class="faq-question">
+              <span>Q. 동일한 상품으로만 2개 사도 20% 할인이 되나요?</span>
+              <span class="faq-arrow">▾</span>
+            </button>
+            <div class="faq-answer">
+              <p><strong>네, 물론입니다!</strong> 훈제오리 샐러드랩 2개, 소불고기덮밥 2개 등 같은 상품을 중복으로 2개 선택하셔도 20% 할인이 동일하게 적용됩니다.</p>
             </div>
           </div>
-
-          <!-- Item 2: 한끼 소불고기덮밥 -->
-          <div class="sim-product-card" data-id="beefbowl" data-price="5900" data-name="한끼 소불고기덮밥">
-            <div class="sim-card-top">
-              <div class="sim-img-wrap">
-                <img src="./카드뉴스4.webp" alt="한끼 소불고기덮밥" class="sim-thumb" style="object-position: 18% 41%;">
-                <span class="sim-tag best">든든한 고기 한끼</span>
-              </div>
-              <div class="sim-info">
-                <div class="sim-header-row">
-                  <h3 class="sim-title">한끼 소불고기덮밥</h3>
-                  <span class="sim-stat-pill">매출 -3.89% 회복타깃</span>
-                </div>
-                <p class="sim-subtitle">특제 단짠 소스로 볶아낸 풍성한 소불고기와 든든한 밥</p>
-                <div class="sim-price-row">
-                  <span class="sim-regular-price">정상가 <strong>5,900원</strong></span>
-                  <span class="sim-dc-hint">2개 담을 때 끼당 4,720원</span>
-                </div>
-              </div>
-            </div>
-            <div class="sim-card-bottom">
-              <div class="qty-control">
-                <button class="btn-qty minus" data-action="minus" aria-label="수량 감소">-</button>
-                <span class="qty-display" id="qty-beefbowl">1</span>
-                <button class="btn-qty plus" data-action="plus" aria-label="수량 증가">+</button>
-              </div>
-              <div class="item-subtotal" id="subtotal-beefbowl">5,900원</div>
+          <div class="faq-item">
+            <button class="faq-question">
+              <span>Q. 3개 이상을 사면 어떻게 계산되나요?</span>
+              <span class="faq-arrow">▾</span>
+            </button>
+            <div class="faq-answer">
+              <p>대상 상품 2개 이상 구매 시 <strong>선택하신 대상 상품 전체 합계 금액에 대해 20% 즉시 할인</strong>이 적용됩니다. (3개 구매 시에도 전체 20% 할인)</p>
             </div>
           </div>
-
-          <!-- Item 3: 매콤 닭갈비볶음밥 -->
-          <div class="sim-product-card" data-id="chickenrice" data-price="5500" data-name="매콤 닭갈비볶음밥">
-            <div class="sim-card-top">
-              <div class="sim-img-wrap">
-                <img src="./카드뉴스4.webp" alt="매콤 닭갈비볶음밥" class="sim-thumb" style="object-position: 36% 41%;">
-                <span class="sim-tag spicy">매콤 가성비 끝판왕</span>
-              </div>
-              <div class="sim-info">
-                <div class="sim-header-row">
-                  <h3 class="sim-title">매콤 닭갈비볶음밥</h3>
-                  <span class="sim-stat-pill">가장 실속 있는 5,500원</span>
-                </div>
-                <p class="sim-subtitle">불맛 가득 매콤 소스와 쫄깃한 닭갈비의 중독성</p>
-                <div class="sim-price-row">
-                  <span class="sim-regular-price">정상가 <strong>5,500원</strong></span>
-                  <span class="sim-dc-hint">2개 담을 때 끼당 4,400원</span>
-                </div>
-              </div>
+          <div class="faq-item">
+            <button class="faq-question">
+              <span>Q. 다른 할인 쿠폰과 중복 적용이 되나요?</span>
+              <span class="faq-arrow">▾</span>
+            </button>
+            <div class="faq-answer">
+              <p>본 프로모션은 센트럴점 단독 20% 파격 특가 지원 행사로 타 제휴 할인 쿠폰 및 마감 세일과의 중복 적용은 불가합니다.</p>
             </div>
-            <div class="sim-card-bottom">
-              <div class="qty-control">
-                <button class="btn-qty minus" data-action="minus" aria-label="수량 감소">-</button>
-                <span class="qty-display" id="qty-chickenrice">0</span>
-                <button class="btn-qty plus" data-action="plus" aria-label="수량 증가">+</button>
-              </div>
-              <div class="item-subtotal" id="subtotal-chickenrice">0원</div>
+          </div>
+          <div class="faq-item">
+            <button class="faq-question">
+              <span>Q. 선착순 20세트가 마감되면 어떻게 되나요?</span>
+              <span class="faq-arrow">▾</span>
+            </button>
+            <div class="faq-answer">
+              <p>매일 점심 12:00부터 선착순 20세트가 소진되면 당일 행사는 종료되며, 익일 점심 12:00에 새로운 20세트로 다시 오픈됩니다.</p>
             </div>
           </div>
         </div>
+      </section>
 
-        <!-- Real-time Bill / Calculation Receipt Card -->
-        <div class="calculation-receipt-card" id="receiptCard">
-          <div class="calc-status-banner" id="calcStatusBanner">
+    </main>
+
+    <!-- RIGHT: Sticky Calculator Sidebar -->
+    <aside class="laptop-sidebar-col" id="simulator">
+      <div class="sticky-calc-panel" id="stickyCalcPanel">
+
+        <div class="calc-top-header">
+          <div class="calc-title-group">
+            <span class="calc-badge-live">LIVE CALCULATOR</span>
+            <h2 class="calc-main-title">2종 골라담기 계산기</h2>
+          </div>
+          <button class="btn-calc-reset" id="btnReset" title="선택 비우기">초기화</button>
+        </div>
+
+        <p class="calc-sub-guide">원하는 상품의 수량을 담아보세요. 2개 이상 담으면 <strong>20% 즉시 할인</strong>이 적용됩니다.</p>
+
+        <!-- 상품 선택 카드 -->
+        <div class="sidebar-product-list">
+          <!-- 샐러드랩 -->
+          <div class="side-product-card" data-id="saladwrap">
+            <div class="sp-left">
+              <img src="./menu_saladwrap.png" alt="훈제오리 샐러드랩" class="sp-thumb">
+              <div class="sp-info">
+                <span class="sp-name">훈제오리 샐러드랩</span>
+                <span class="sp-price">6,200원</span>
+              </div>
+            </div>
+            <div class="sp-right">
+              <div class="sp-qty-ctrl">
+                <button class="btn-sp-qty minus" data-action="minus" aria-label="수량 감소">-</button>
+                <span class="sp-qty-num" id="qty-saladwrap">1</span>
+                <button class="btn-sp-qty plus" data-action="plus" aria-label="수량 증가">+</button>
+              </div>
+              <span class="sp-subtotal" id="subtotal-saladwrap">6,200원</span>
+            </div>
+          </div>
+          <!-- 소불고기덮밥 -->
+          <div class="side-product-card" data-id="beefbowl">
+            <div class="sp-left">
+              <img src="./menu_beefbowl.png" alt="한끼 소불고기덮밥" class="sp-thumb">
+              <div class="sp-info">
+                <span class="sp-name">한끼 소불고기덮밥</span>
+                <span class="sp-price">5,900원</span>
+              </div>
+            </div>
+            <div class="sp-right">
+              <div class="sp-qty-ctrl">
+                <button class="btn-sp-qty minus" data-action="minus" aria-label="수량 감소">-</button>
+                <span class="sp-qty-num" id="qty-beefbowl">1</span>
+                <button class="btn-sp-qty plus" data-action="plus" aria-label="수량 증가">+</button>
+              </div>
+              <span class="sp-subtotal" id="subtotal-beefbowl">5,900원</span>
+            </div>
+          </div>
+          <!-- 닭갈비볶음밥 -->
+          <div class="side-product-card" data-id="chickenrice">
+            <div class="sp-left">
+              <img src="./menu_chickenrice.png" alt="매콤 닭갈비볶음밥" class="sp-thumb">
+              <div class="sp-info">
+                <span class="sp-name">매콤 닭갈비볶음밥</span>
+                <span class="sp-price">5,500원</span>
+              </div>
+            </div>
+            <div class="sp-right">
+              <div class="sp-qty-ctrl">
+                <button class="btn-sp-qty minus" data-action="minus" aria-label="수량 감소">-</button>
+                <span class="sp-qty-num" id="qty-chickenrice">0</span>
+                <button class="btn-sp-qty plus" data-action="plus" aria-label="수량 증가">+</button>
+              </div>
+              <span class="sp-subtotal" id="subtotal-chickenrice">0원</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 영수증 요약 -->
+        <div class="sidebar-receipt-box">
+          <div class="receipt-status-banner" id="calcStatusBanner">
             <span class="status-icon">🎉</span>
-            <span class="status-msg"><strong>20% 할인 조건 충족!</strong> (2개 이상 선택 완료 · 전 조합 9천원대)</span>
+            <span class="status-msg"><strong>20% 할인 조건 충족!</strong> (전 조합 9천원대 실현)</span>
           </div>
-
-          <div class="receipt-inner">
-            <div class="receipt-header">
-              <div class="receipt-title-wrap">
-                <span class="receipt-title">선택 상품 실시간 정산</span>
-                <span class="receipt-total-count" id="totalCountBadge">총 2개 선택</span>
-              </div>
-              <button class="btn-reset" id="btnReset">전체 비우기</button>
+          <div class="receipt-content">
+            <div class="selected-chips-summary" id="selectedChipsContainer">
+              <span class="chip-bubble">훈제오리 샐러드랩 1개</span>
+              <span class="chip-bubble">한끼 소불고기덮밥 1개</span>
             </div>
-
-            <!-- Selected Items Summary Chips -->
-            <div class="selected-chips-row" id="selectedChipsContainer">
-              <span class="chip-item">훈제오리 샐러드랩 1개</span>
-              <span class="chip-item">한끼 소불고기덮밥 1개</span>
-            </div>
-
-            <!-- Price Calculation Rows -->
-            <div class="price-breakdown">
-              <div class="price-row">
-                <span class="p-label">정상 합계 금액</span>
-                <span class="p-val" id="receiptOriginalPrice">12,100원</span>
+            <div class="receipt-math-rows">
+              <div class="r-row">
+                <span class="r-lbl">정상 합계 금액</span>
+                <span class="r-val" id="receiptOriginalPrice">12,100원</span>
               </div>
-              <div class="price-row dc-row" id="receiptDcRow">
-                <span class="p-label">
-                  <span class="dc-badge">20% DC</span> 즉시 할인 차감액
-                </span>
-                <span class="p-val dc-val" id="receiptDiscountAmount">-2,420원</span>
+              <div class="r-row dc-color" id="receiptDcRow">
+                <span class="r-lbl"><span class="badge-dc-pill">20% DC</span> 즉시 할인 차감액</span>
+                <span class="r-val dc-val" id="receiptDiscountAmount">-2,420원</span>
               </div>
-              <div class="price-divider"></div>
-              <div class="price-row final-row">
-                <div class="final-label-group">
-                  <span class="p-final-label">최종 결제 예상가</span>
-                  <span class="p-sub-label">센트럴점 POS 계산대 즉시 20% 자동 차감</span>
+              <div class="r-divider"></div>
+              <div class="r-row final-highlight-row">
+                <div class="final-lbl-group">
+                  <span class="final-main-lbl">최종 결제 예상가</span>
+                  <span class="final-sub-lbl">계산대 자동 20% 차감</span>
                 </div>
-                <div class="final-price-group">
-                  <span class="final-price" id="receiptFinalPrice">9,680</span>
-                  <span class="final-won">원</span>
+                <div class="final-price-wrapper">
+                  <span class="big-final-num" id="receiptFinalPrice">9,680</span>
+                  <span class="big-final-won">원</span>
                 </div>
               </div>
             </div>
-
-            <!-- Unit Meal Value Banner -->
-            <div class="meal-unit-banner" id="mealUnitBanner">
-              <div class="meal-tag">실속 체감 혜택</div>
-              <div class="meal-text">
-                1끼 환산 단 <strong><span id="mealUnitPrice">4,840</span>원</strong>으로 삼각김밥 대신 고품질 2끼 해결!
-              </div>
+            <div class="sidebar-meal-callout" id="mealUnitBanner">
+              <span class="callout-tag">실속 체감 혜택</span>
+              <p class="callout-text">1끼 환산 단 <strong><span id="mealUnitPrice">4,840</span>원</strong>으로 든든한 2끼 해결!</p>
             </div>
-
-            <!-- Action Button Group -->
-            <div class="receipt-action-group">
-              <button class="btn-primary-action" id="btnOpenBarcode">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                  stroke-linecap="round" stroke-linejoin="round">
+            <div class="sidebar-actions">
+              <button class="btn-get-barcode" id="btnOpenBarcode">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
                   <rect x="2" y="4" width="20" height="16" rx="2"></rect>
-                  <path d="M6 8v8"></path>
-                  <path d="M10 8v8"></path>
-                  <path d="M14 8v8"></path>
-                  <path d="M18 8v8"></path>
+                  <path d="M6 8v8"></path><path d="M10 8v8"></path><path d="M14 8v8"></path><path d="M18 8v8"></path>
                 </svg>
-                <span>매장 전용 모바일 바코드 발급받기</span>
+                <span>모바일 할인 바코드 받기</span>
               </button>
-              <button class="btn-secondary-action" id="btnShareComb">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <button class="btn-share-combination" id="btnShareComb">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
                   <polyline points="16 6 12 2 8 6"></polyline>
                   <line x1="12" y1="2" x2="12" y2="15"></line>
                 </svg>
-                <span>이 조합 친구에게 카카오톡/링크 공유하기</span>
+                <span>이 조합 친구에게 공유하기</span>
               </button>
             </div>
           </div>
         </div>
-      </section>
 
-      <!-- Poster Showcase Section -->
-      <section class="poster-section">
-        <div class="section-heading">
-          <span class="section-sub">이마트 센트럴점 공식 전단 포스터</span>
-          <h2 class="section-title">행사 한눈에 보기</h2>
-        </div>
-        <div class="poster-display-card">
-          <img src="./간편식 20% 할인 이벤트.png" alt="간편식 20% 할인 이벤트 공식 포스터" class="poster-full-img" loading="lazy">
-          <div class="poster-info-box">
-            <div class="poster-point">
-              <span class="point-num">01</span>
-              <div class="point-text">
-                <strong>강제 묶음 전면 탈피</strong>
-                <p>3종 중 동일 상품 중복 포함 원하는 메뉴 2개 자유 선택</p>
-              </div>
-            </div>
-            <div class="poster-point">
-              <span class="point-num">02</span>
-              <div class="point-text">
-                <strong>전 조합 9천원대 실현 (1끼 4,000원대)</strong>
-                <p>세트당 최대 2,480원 즉시 할인으로 초저가 대체재 대비 압도적 품질 가성비</p>
-              </div>
-            </div>
-            <div class="poster-point">
-              <span class="point-num">03</span>
-              <div class="point-text">
-                <strong>매일 점심 12:00 선착순 타임어택</strong>
-                <p>총 예산 20만 원 엄격 통제 및 매대 골든존 희소성 극대화</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Card News Carousel -->
-      <section class="story-section" id="story">
-        <div class="section-heading">
-          <span class="section-sub">Customer Voice & Solution</span>
-          <h2 class="section-title">왜 골라담는 20% 할인으로 바뀌었을까요?</h2>
-          <p class="section-caption">고객 설문조사(N=20)를 통해 발견한 혼밥 고객님들의 목소리입니다.</p>
-        </div>
-
-        <div class="carousel-container">
-          <div class="carousel-track" id="cardNewsTrack">
-            <!-- Slide 1 -->
-            <div class="carousel-slide active" data-index="0">
-              <img src="./카드뉴스2.webp" alt="카드뉴스 2 - 고객 목소리에 집중했습니다" class="slide-img">
-              <div class="slide-caption">
-                <h4>혼밥족 75%는 혼자 식사 해결, 65%는 묶음 구매 의향 확인!</h4>
-                <p>영양 균형(30%)과 할인 혜택(35%)에 대한 강력한 구매 수요 가설을 검증했습니다.</p>
-              </div>
-            </div>
-            <!-- Slide 2 -->
-            <div class="carousel-slide" data-index="1">
-              <img src="./카드뉴스3.webp" alt="카드뉴스 3 - 원하는 2가지를 자유롭게" class="slide-img">
-              <div class="slide-caption">
-                <h4>"샐러드랩 1 + 덮밥 1 공급자 강제 구성은 이제 그만!"</h4>
-                <p>1인 고객에게 양과 가격 부담을 주던 강제 구성을 과감히 버리고 자율 선택권을 부여했습니다.</p>
-              </div>
-            </div>
-            <!-- Slide 3 -->
-            <div class="carousel-slide" data-index="2">
-              <img src="./카드뉴스4.webp" alt="카드뉴스 4 - 든든하게 vs 가볍게" class="slide-img">
-              <div class="slide-caption">
-                <h4>취향대로 고르는 재미! 든든하게 VS 가볍게</h4>
-                <p>어떤 조합을 골라도 전 조합 9,000원대 실속 가격으로 든든한 2끼를 해결합니다.</p>
-              </div>
-            </div>
-            <!-- Slide 4 -->
-            <div class="carousel-slide" data-index="3">
-              <img src="./카드뉴스5.webp" alt="카드뉴스 5 - 2개 이상 20% 즉시 할인" class="slide-img">
-              <div class="slide-caption">
-                <h4>세트당 최대 2,480원 즉시 할인, 1끼 단 4,000원대!</h4>
-                <p>삼각김밥/라면으로 이탈하던 고객에게 정통 간편식의 프리미엄 가성비를 제공합니다.</p>
-              </div>
-            </div>
-            <!-- Slide 5 -->
-            <div class="carousel-slide" data-index="4">
-              <img src="./카드뉴스6.webp" alt="카드뉴스 6 - 매일 점심 12:00 선착순 타임어택" class="slide-img">
-              <div class="slide-caption">
-                <h4>매일 점심 12:00 선착순 타임어택!</h4>
-                <p>오직 이마트 센트럴점 냉장 매대 골든존(2~3단)에서만 한정 수량으로 진행됩니다.</p>
-              </div>
-            </div>
-          </div>
-
-          <div class="carousel-controls">
-            <button class="btn-caro prev" id="btnPrevSlide" aria-label="이전 카드">‹</button>
-            <div class="carousel-dots" id="carouselDots">
-              <span class="dot active" data-index="0"></span>
-              <span class="dot" data-index="1"></span>
-              <span class="dot" data-index="2"></span>
-              <span class="dot" data-index="3"></span>
-              <span class="dot" data-index="4"></span>
-            </div>
-            <button class="btn-caro next" id="btnNextSlide" aria-label="다음 카드">›</button>
-          </div>
-        </div>
-      </section>
-
-      <!-- Store Golden Zone Guide -->
-      <section class="store-guide-section" id="storeGuide">
-        <div class="section-heading">
-          <span class="section-sub">Where to Find</span>
-          <h2 class="section-title">이마트 센트럴점 매대 찾는 법</h2>
-        </div>
-
-        <div class="store-guide-grid">
-          <div class="guide-card">
-            <div class="guide-icon">📍</div>
-            <h3>행사 위치</h3>
-            <p><strong>이마트 센트럴점 B1 식품관</strong><br>냉장 간편식 코너</p>
-          </div>
-          <div class="guide-card highlight-card">
-            <div class="guide-icon">⭐</div>
-            <h3>골든존 진열 팁</h3>
-            <p>서서 바라보는 <strong>상단 2~3단 눈높이 진열대</strong>에서 3종 상품이 나란히 인접 진열되어 있습니다.</p>
-          </div>
-          <div class="guide-card">
-            <div class="guide-icon">💳</div>
-            <h3>자동 20% 차감</h3>
-            <p>대상 3종 중 2개 이상 계산 시 <strong>POS에서 20% 자동 차감</strong>됩니다.</p>
-          </div>
-          <div class="guide-card">
-            <div class="guide-icon">⏰</div>
-            <h3>타임어택 시간</h3>
-            <p><strong>매일 12:00 정각 개시</strong><br>(선착순 마감 시 자동 종료)</p>
-          </div>
-        </div>
-      </section>
-
-      <!-- FAQ Section -->
-      <section class="faq-section">
-        <div class="section-heading">
-          <span class="section-sub">Notice & FAQ</span>
-          <h2 class="section-title">자주 묻는 질문</h2>
-        </div>
-
-        <div class="accordion-list">
-          <div class="accordion-item">
-            <button class="accordion-btn">
-              <span>Q. 같은 상품으로만 2개 사도 20% 할인이 되나요?</span>
-              <span class="acc-chevron">▾</span>
-            </button>
-            <div class="accordion-body">
-              <p><strong>네, 가능합니다!</strong> 훈제오리 샐러드랩 2개, 소불고기덮밥 2개 등 동일 상품 2개 이상 구매 시에도 동일하게 20% 할인이 적용됩니다.</p>
-            </div>
-          </div>
-
-          <div class="accordion-item">
-            <button class="accordion-btn">
-              <span>Q. 3개를 구매하면 어떻게 계산되나요?</span>
-              <span class="acc-chevron">▾</span>
-            </button>
-            <div class="accordion-body">
-              <p>대상 3종 상품 2개 이상 구매 시 <strong>선택하신 대상 상품 전체 합계 금액에 대해 20% 즉시 할인</strong>이 적용됩니다.</p>
-            </div>
-          </div>
-
-          <div class="accordion-item">
-            <button class="accordion-btn">
-              <span>Q. 타 할인 쿠폰이나 제휴 할인과 중복 적용이 되나요?</span>
-              <span class="acc-chevron">▾</span>
-            </button>
-            <div class="accordion-body">
-              <p>본 프로모션은 자체 20% 특가 지원 행사로 타 제휴 할인 쿠폰 및 마감 세일과의 중복 적용은 불가합니다.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-    </div>
-
-    <!-- ============================================================== -->
-    <!-- VIEW 2: DATA INSIGHTS & BACKGROUND VIEW (기획 근거 데이터)      -->
-    <!-- ============================================================== -->
-    <div class="view-content" id="view-data-insight">
-      <section class="data-view-section">
-        <div class="data-doc-badge">
-          <span>문서번호: PLAN-20261014-FINAL</span>
-          <span>부서: 데이터 리터러시 프로모션팀</span>
-        </div>
-
-        <div class="section-heading">
-          <span class="section-sub">Why We Started</span>
-          <h2 class="section-title">실적 데이터 분석 (문제 발원)</h2>
-          <p class="section-caption">센트럴점 전체 매출은 성장세(+1.28%)였으나, 냉장 간편식 카테고리는 -1.60% 역성장했습니다.</p>
-        </div>
-
-        <!-- Metric Scorecards -->
-        <div class="metric-card-grid">
-          <div class="metric-card warning-card">
-            <span class="m-label">센트럴점 전체 매출</span>
-            <span class="m-val success">+1.28%</span>
-            <span class="m-sub">안정적 신장세 유지</span>
-          </div>
-          <div class="metric-card danger-card">
-            <span class="m-label">냉장 간편식 카테고리</span>
-            <span class="m-val danger">-1.60%</span>
-            <span class="m-sub">카테고리 역성장 심화</span>
-          </div>
-          <div class="metric-card alert-card">
-            <span class="m-label">핵심 3종 상품 매출</span>
-            <span class="m-val alert">-5.41%</span>
-            <span class="m-sub">1,046.8만 → 990.2만 원 (-56.6만 원)</span>
-          </div>
-        </div>
-
-        <!-- 3 Items Decline Breakdown Chart -->
-        <div class="data-chart-box">
-          <h3 class="chart-box-title">📉 매출 급감 핵심 3종 세부 내역</h3>
-          <div class="chart-bar-list">
-            <div class="chart-bar-item">
-              <div class="c-info">
-                <span class="c-name">훈제오리 샐러드랩</span>
-                <span class="c-val danger">-9.38% (-35.3만 원)</span>
-              </div>
-              <div class="c-track">
-                <div class="c-fill fill-red" style="width: 78%;"></div>
-              </div>
-            </div>
-
-            <div class="chart-bar-item">
-              <div class="c-info">
-                <span class="c-name">한끼 소불고기덮밥</span>
-                <span class="c-val alert">-3.89% (-13.5만 원)</span>
-              </div>
-              <div class="c-track">
-                <div class="c-fill fill-orange" style="width: 45%;"></div>
-              </div>
-            </div>
-
-            <div class="chart-bar-item">
-              <div class="c-info">
-                <span class="c-name">매콤 닭갈비볶음밥</span>
-                <span class="c-val alert">-2.40% (-7.7만 원)</span>
-              </div>
-              <div class="c-track">
-                <div class="c-fill fill-yellow" style="width: 32%;"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Customer Survey Visual Infographic (N=20) -->
-        <div class="section-heading" style="margin-top: 32px;">
-          <span class="section-sub">Customer Research Data</span>
-          <h2 class="section-title">고객 사전 설문조사 결과 (N=20)</h2>
-          <p class="section-caption">20명의 실제 구매 고객 정량/정성 조사에서 도출된 핵심 데이터입니다.</p>
-        </div>
-
-        <div class="survey-grid">
-          <!-- Stat 1 -->
-          <div class="survey-card">
-            <div class="survey-donut-stat">
-              <span class="donut-num">75%</span>
-              <span class="donut-label">1인 단독 식사</span>
-            </div>
-            <h4>1인 식사 목적 (75%)</h4>
-            <p>혼자 빠르게 해결하는 단독 식사가 절대 다수로 2인분 강제 구성에 큰 부담</p>
-          </div>
-
-          <!-- Stat 2 -->
-          <div class="survey-card">
-            <div class="survey-donut-stat color-orange">
-              <span class="donut-num">65%</span>
-              <span class="donut-label">묶음 구매 의향</span>
-            </div>
-            <h4>동시 구매 수요 검증 (65%)</h4>
-            <p>영양 균형 목적 30% + 혜택 시 구매 35%로 합리적 번들링 수요 존재 확인</p>
-          </div>
-
-          <!-- Stat 3 -->
-          <div class="survey-card">
-            <div class="survey-donut-stat color-red">
-              <span class="donut-num">65%</span>
-              <span class="donut-label">고객 이탈의 본질</span>
-            </div>
-            <h4>초저가 대체재 이동 (65%)</h4>
-            <p>삼각김밥/라면 이동 35% + 단품 가성비 부담 30%로 만 원 초과 시 구매 포기</p>
-          </div>
-
-          <!-- Stat 4 -->
-          <div class="survey-card">
-            <div class="survey-donut-stat color-green">
-              <span class="donut-num">85%</span>
-              <span class="donut-label">홍보 집중 접점</span>
-            </div>
-            <h4>홍보 접점 집중도 (85%)</h4>
-            <p>냉장 매대 앞 65% + 가격표 옆 20%로 인스토어 골든존 POP 효과 입증</p>
-          </div>
-        </div>
-
-        <!-- Strategy Pivot Card (Before vs After) -->
-        <div class="pivot-comparison-card">
-          <div class="pivot-header">
-            <span class="pivot-badge">STRATEGY PIVOT</span>
-            <h3>고객 중심 피벗 (공급자 중심 → 고객 자율 선택)</h3>
-          </div>
-          <div class="pivot-table-wrap">
-            <table class="pivot-table">
-              <thead>
-                <tr>
-                  <th>구분</th>
-                  <th>기존 (AS-IS)</th>
-                  <th>피벗 후 (TO-BE)</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><strong>묶음 방식</strong></td>
-                  <td>공급자 강제 묶음<br>(샐러드랩 1 + 덮밥 1)</td>
-                  <td class="to-be-cell"><strong>고객 자율 선택</strong><br>(3종 중 2개 자유 선택)</td>
-                </tr>
-                <tr>
-                  <td><strong>가격대</strong></td>
-                  <td>11,000원 대 (부담 발생)</td>
-                  <td class="to-be-cell"><strong>전 조합 9천원대</strong><br>(20% 즉시 할인)</td>
-                </tr>
-                <tr>
-                  <td><strong>1끼 환산가</strong></td>
-                  <td>5,500원 ~ 6,000원</td>
-                  <td class="to-be-cell"><strong>4,000원대 실속 실현</strong></td>
-                </tr>
-                <tr>
-                  <td><strong>타깃 충족</strong></td>
-                  <td>1인 고객의 식단 불일치</td>
-                  <td class="to-be-cell"><strong>식단/든든/가성비 100% 충족</strong></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-    </div>
-
-    <!-- ============================================================== -->
-    <!-- VIEW 3: FINANCIAL & BEP SIMULATOR (재무 및 손익분기점 분석)    -->
-    <!-- ============================================================== -->
-    <div class="view-content" id="view-financial-bep">
-      <section class="bep-view-section">
-        <div class="section-heading">
-          <span class="section-sub">Strict Budget & BEP Model</span>
-          <h2 class="section-title">재무 분석 및 손익분기점(BEP) 시뮬레이터</h2>
-          <p class="section-caption">총 집행 예산 200,000원 엄격 통제 하에 순증 공헌이익과 손익분기점을 시뮬레이션합니다.</p>
-        </div>
-
-        <!-- Budget Breakdown Table -->
-        <div class="budget-card">
-          <h3 class="budget-title">💰 프로모션 총 집행 예산 (200,000원 엄격 통제)</h3>
-          <div class="budget-list">
-            <div class="b-item">
-              <div class="b-info">
-                <strong>고객 20% 할인 보전 지원금</strong>
-                <span>평균 할인액 2,380원 × 일 6세트 × 14일 (84세트)</span>
-              </div>
-              <span class="b-cost">170,000원</span>
-            </div>
-            <div class="b-item">
-              <div class="b-info">
-                <strong>냉장 매대 쇼케이스 스윙어 및 띠지</strong>
-                <span>쇼케이스 전면 부착 2세트 (특가 안내)</span>
-              </div>
-              <span class="b-cost">18,000원</span>
-            </div>
-            <div class="b-item">
-              <div class="b-info">
-                <strong>골든존 형광 아크릴 네임택</strong>
-                <span>3종 상품 가격표 부착용 형광 네임택</span>
-              </div>
-              <span class="b-cost">12,000원</span>
-            </div>
-            <div class="b-item">
-              <div class="b-info">
-                <strong>계산대 POS 화면 배너</strong>
-                <span>자체 제작 시스템 송출 (추가 비용 0원)</span>
-              </div>
-              <span class="b-cost">0원</span>
-            </div>
-            <div class="b-item total-item">
-              <div class="b-info">
-                <strong>총 집행 예산 합계</strong>
-                <span>예산 상한 100% 준수 (초과 원천 차단)</span>
-              </div>
-              <strong class="b-total">200,000원</strong>
-            </div>
-          </div>
-        </div>
-
-        <!-- Interactive BEP Simulator Slider -->
-        <div class="bep-simulator-box">
-          <h3 class="sim-box-title">🎛️ 실시간 판매량 손익분기점(BEP) 시뮬레이터</h3>
-          <p class="sim-box-desc">행사 14일간 총 판매 세트 수를 조절하여 BEP 도달률 및 예상 순증 공헌이익을 확인하세요.</p>
-
-          <div class="bep-slider-container">
-            <div class="slider-label-row">
-              <span>예상 총 판매 세트 수 (14일간)</span>
-              <span class="slider-val"><strong id="bepSetCount">84</strong> 세트 (일평균 6세트 완판)</span>
-            </div>
-            <input type="range" id="bepRange" min="20" max="140" value="84" step="2" class="bep-range-input">
-            <div class="range-markers">
-              <span>20세트 (부진)</span>
-              <span class="bep-marker-highlight">★ BEP (67세트)</span>
-              <span>84세트 (목표 완판)</span>
-              <span>140세트 (초과)</span>
-            </div>
-          </div>
-
-          <!-- Simulation Output Cards -->
-          <div class="bep-output-grid">
-            <div class="bep-out-card">
-              <span class="out-lbl">총 순증 매출액</span>
-              <span class="out-val" id="bepTotalSales">803,040원</span>
-            </div>
-            <div class="bep-out-card">
-              <span class="out-lbl">투입 총 예산</span>
-              <span class="out-val text-dark" id="bepTotalCost">200,000원</span>
-            </div>
-            <div class="bep-out-card highlight-out">
-              <span class="out-lbl">최종 증분이익 (Net Profit)</span>
-              <span class="out-val out-profit" id="bepNetProfit">+200,760원</span>
-            </div>
-            <div class="bep-out-card">
-              <span class="out-lbl">BEP 달성률</span>
-              <span class="out-val out-rate" id="bepRate">125% (흑자)</span>
-            </div>
-          </div>
-
-          <!-- BEP Progress Meter -->
-          <div class="bep-meter-wrap">
-            <div class="bep-meter-header">
-              <span>손익분기점 돌파 게이지</span>
-              <span id="bepMeterText">BEP 돌파 흑자 구간</span>
-            </div>
-            <div class="bep-meter-bar">
-              <div class="bep-meter-fill" id="bepMeterFill" style="width: 80%;"></div>
-            </div>
-          </div>
-
-          <div class="halo-effect-note">
-            <span class="halo-icon">✨</span>
-            <div class="halo-text">
-              <strong>집객 효과 (Halo Effect) 추가 반영:</strong><br>
-              20% 할인 배너로 유입된 고객의 타 신선식품/음료 연관 구매로 실제 매장 공헌이익은 시뮬레이션 대비 <strong>+15~20% 추가 상승</strong>합니다.
-            </div>
-          </div>
-        </div>
-
-        <!-- 5 Success KPIs Table -->
-        <div class="kpi-card">
-          <h3 class="kpi-title">🎯 프로모션 최종 성공 판단 기준 (KPI)</h3>
-          <div class="kpi-table-wrap">
-            <table class="kpi-table">
-              <thead>
-                <tr>
-                  <th>구분</th>
-                  <th>성공 기준 (Target)</th>
-                  <th>측정 및 검증 방식</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><strong>최우선 지표</strong></td>
-                  <td class="kpi-highlight">최종 증분이익 0원 초과 (흑자)</td>
-                  <td>투입 예산 20만 원 대비 순증 매출 공헌이익 산출</td>
-                </tr>
-                <tr>
-                  <td><strong>매출 증대</strong></td>
-                  <td>대조군(리버·파크점) 대비 +10% 이상</td>
-                  <td>비행사 점포와의 DID (이중차분) 비교 분석</td>
-                </tr>
-                <tr>
-                  <td><strong>판매 수량</strong></td>
-                  <td>샐러드랩 판매량 +12% 이상</td>
-                  <td>역성장 1위(-9.38%) 품목의 집중 회복 점검</td>
-                </tr>
-                <tr>
-                  <td><strong>재고 통제</strong></td>
-                  <td>행사 3종 폐기율 3.0% 미만 유지</td>
-                  <td>일일 11:30 재고 점검 및 22:00 마감 폐기일지 작성</td>
-                </tr>
-                <tr>
-                  <td><strong>2차 확대</strong></td>
-                  <td>센트럴점 흑자 검증 시 【파크점】 우선 확대</td>
-                  <td>사후 14일간 매출 반락(Dip) 여부 추적 관찰 후 결정</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-    </div>
-
-  </main>
-
-  <!-- Sticky Bottom Quick Bar -->
-  <aside class="sticky-bottom-bar" id="stickyBottomBar">
-    <div class="bar-inner">
-      <div class="bar-summary">
-        <div class="bar-top">
-          <span class="bar-badge" id="barBadge">2개 담김 · 20% DC</span>
-          <span class="bar-meals" id="barMealPrice">1끼 4,840원</span>
-        </div>
-        <div class="bar-price-row">
-          <span class="bar-orig-price" id="barOrigPrice">12,100원</span>
-          <span class="bar-final-price" id="barFinalPrice">9,680원</span>
-        </div>
       </div>
-      <button class="bar-action-btn" id="btnStickyAction">
-        <span>모바일 바코드</span>
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-          <polyline points="9 18 15 12 9 6"></polyline>
-        </svg>
-      </button>
-    </div>
-  </aside>
+    </aside>
 
-  <!-- Barcode Modal Popup -->
+  </div>
+
+  <!-- 바코드 모달 -->
   <div class="modal-overlay" id="barcodeModal" role="dialog" aria-modal="true" aria-hidden="true">
     <div class="modal-content">
       <button class="modal-close-btn" id="btnCloseModal" aria-label="닫기">&times;</button>
       <div class="modal-header">
         <span class="modal-emart-logo">emart</span>
-        <h3 class="modal-title">센트럴점 매장 할인 바코드</h3>
-        <p class="modal-desc">식품관 냉장 매대 골든존에서 상품 2종을 골라 계산대에서 제시하세요!</p>
+        <h3 class="modal-title">이마트 센트럴점 현장 할인 바코드</h3>
+        <p class="modal-desc">센트럴점 냉장 매대 골든존에서 상품 2종을 골라 계산대에 제시하세요!</p>
       </div>
-
       <div class="modal-ticket-card">
         <div class="ticket-header">
           <span class="ticket-tag">센트럴점 단독 냉장 간편식</span>
-          <span class="ticket-discount">20% 즉시할인</span>
+          <span class="ticket-discount">20% 파격할인</span>
         </div>
         <div class="ticket-selected-items" id="ticketItemsSummary">
-          • 훈제오리 샐러드랩 1개<br>
-          • 한끼 소불고기덮밥 1개
+          • 훈제오리 샐러드랩 1개<br>• 한끼 소불고기덮밥 1개
         </div>
         <div class="ticket-price-info">
-          <div class="t-row">
-            <span>정상 합계</span>
-            <span id="ticketOrig">12,100원</span>
-          </div>
-          <div class="t-row t-highlight">
-            <span>20% 적용가</span>
-            <strong id="ticketFinal">9,680원</strong>
-          </div>
+          <div class="t-row"><span>정상 합계</span><span id="ticketOrig">12,100원</span></div>
+          <div class="t-row t-highlight"><span>20% 적용 행사가</span><strong id="ticketFinal">9,680원</strong></div>
         </div>
-
-        <!-- Simulated Barcode Graphic -->
         <div class="barcode-graphic-box">
           <div class="barcode-lines">
             <span class="b-line w-2"></span><span class="b-line w-1"></span><span class="b-line w-3"></span>
@@ -944,40 +613,42 @@
             <span class="b-line w-3"></span><span class="b-line w-4"></span><span class="b-line w-1"></span>
             <span class="b-line w-2"></span><span class="b-line w-3"></span><span class="b-line w-1"></span>
           </div>
-          <div class="barcode-number">2026-1021-CENTRAL-20OFF</div>
+          <div class="barcode-number">2026-CENTRAL-20OFF-LIMITED</div>
         </div>
-        <p class="ticket-caution">* 매일 12:00 선착순 타임어택 한정 수량 (POS 일일 6세트 자동 통제)</p>
+        <p class="ticket-caution">★ 매일 점심 12:00 선착순 20세트 한정 (POS 자동 20% 차감)</p>
       </div>
-
       <div class="modal-action-row">
-        <button class="modal-btn-primary" id="btnModalConfirm">확인 (화면 캡처하여 매장에서 사용)</button>
+        <button class="modal-btn-primary" id="btnModalConfirm">확인 (화면 캡처하여 매장에서 제시)</button>
       </div>
     </div>
   </div>
 
-  <!-- Toast Notification -->
+  <!-- 토스트 알림 -->
   <div class="toast-popup" id="toastMessage">
     <span class="toast-icon">✅</span>
     <span class="toast-text" id="toastText">링크가 복사되었습니다!</span>
   </div>
 
-  <!-- Footer -->
+  <!-- 푸터 -->
   <footer class="app-footer">
-    <div class="footer-container">
-      <div class="footer-brand">
-        <strong>이마트 센트럴점</strong>
-        <span>데이터 리터러시 프로모션팀 | PLAN-20261014-FINAL</span>
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div class="footer-brand-info">
+          <span class="f-emart">emart</span>
+          <strong>이마트 센트럴점 고객 만족 프로모션</strong>
+        </div>
+        <p class="f-info-text">
+          행사 기간: 2026.10.21(수) ~ 2026.11.03(화) (14일간, 매일 12:00 선착순 20세트 한정)<br>
+          행사 장소: 센트럴역 연결 이마트 센트럴점 지하 1층 식품관 냉장 간편식 골든존 매대<br>
+          고객 만족 센터: 02-1234-5678 | 영업 시간: 10:00 ~ 22:00
+        </p>
       </div>
-      <p class="footer-meta">
-        행사 기간: 2026.10.21(수) ~ 2026.11.03(화) (14일간, 매일 12:00 선착순)<br>
-        매장 위치: 센트럴역 연결 이마트 센트럴점 B1 식품관 냉장 골든존 매대<br>
-        통제 기준: 총 집행 예산 20만 원 엄격 준수 | 대조군: 리버점, 파크점
-      </p>
-      <p class="footer-copy">© 2026 E-MART CENTRAL STORE. DATA-DRIVEN PROMOTION PROJECT.</p>
+      <div class="footer-bottom">
+        <p>© 2026 E-MART CENTRAL STORE. ALL RIGHTS RESERVED.</p>
+      </div>
     </div>
   </footer>
 
   <script src="app.js"></script>
 </body>
-
 </html>
