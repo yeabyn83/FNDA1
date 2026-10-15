@@ -1,854 +1,983 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>매출 분석 대시보드</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- PapaParse for CSV Parsing -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-        .glass-panel {
-            background: rgba(255, 255, 255, 0.92);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(229, 231, 235, 0.8);
-        }
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: #f1f5f9;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 4px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>이마트 센트럴점 | 데이터 기반 냉장 간편식 20% 프로모션 & 리포트</title>
+  <meta name="description" content="설문조사 데이터 기반 고객 맞춤형 20% 파격 할인! 이마트 센트럴점 단독 냉장 간편식 3종 골라담기 프로모션 및 데이터 인사이트 대시보드">
+  <meta property="og:title" content="[이마트 센트럴점] 내 맘대로 골라 담는 간편식 20% 파격 할인 & 데이터 기획서">
+  <meta property="og:description" content="전 조합 9천원대, 1끼 4천원대 실현! 데이터 기반 기획 배경과 실시간 조합 계산기.">
+  <meta property="og:image" content="./간편식 20% 할인 이벤트.png">
+  <meta property="og:type" content="website">
+
+  <!-- Modern Fonts (Pretendard & Outfit) -->
+  <link rel="stylesheet" as="style" crossorigin
+    href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;700;800;900&family=Noto+Sans+KR:wght@400;500;700;800;900&display=swap"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
 
-    <header class="bg-slate-900 text-white shadow-md sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            <div class="flex items-center space-x-3">
-                <div class="p-2 bg-indigo-600 rounded-lg text-white">
-                    <i class="fa-solid fa-chart-line text-xl"></i>
-                </div>
-                <div>
-                    <h1 class="text-lg font-bold tracking-wide">POS 매출 분석 대시보드</h1>
-                    <p class="text-xs text-slate-400">일자별·점포별·카테고리별 실적 모니터링</p>
-                </div>
-            </div>
-            
-            <div class="flex items-center space-x-3">
-                <label for="csvFileInput" class="cursor-pointer bg-indigo-600 hover:bg-indigo-700 text-white text-xs sm:text-sm font-medium px-4 py-2 rounded-lg transition-colors flex items-center space-x-2 shadow-sm">
-                    <i class="fa-solid fa-file-csv"></i>
-                    <span>CSV 파일 업로드</span>
-                </label>
-                <input type="file" id="csvFileInput" accept=".csv, .txt" class="hidden">
-                <button id="resetSampleBtn" class="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs sm:text-sm font-medium px-3 py-2 rounded-lg border border-slate-700 transition-colors flex items-center space-x-1.5" title="샘플 데이터 복원">
-                    <i class="fa-solid fa-rotate-right"></i>
-                    <span class="hidden sm:inline">샘플 데이터</span>
-                </button>
-            </div>
+<body>
+  <!-- Header / Navigation Bar with View Mode Switcher -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand-group">
+        <span class="emart-logo">emart</span>
+        <span class="store-badge">센트럴점 단독</span>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <nav class="nav-tabs" aria-label="메인 탭 네비게이션">
+        <button class="nav-tab active" data-tab="promotion" id="tabPromotion">
+          <span class="tab-icon">🛒</span>
+          <span class="tab-label">프로모션 쇼핑</span>
+        </button>
+        <button class="nav-tab" data-tab="data-insight" id="tabData">
+          <span class="tab-icon">📊</span>
+          <span class="tab-label">데이터 기획 배경</span>
+        </button>
+        <button class="nav-tab" data-tab="financial-bep" id="tabBep">
+          <span class="tab-icon">📈</span>
+          <span class="tab-label">손익(BEP) 분석</span>
+        </button>
+      </nav>
+
+      <div class="header-actions">
+        <button id="btnShareTop" class="btn-icon" aria-label="프로모션 공유하기" title="공유하기">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="18" cy="5" r="3"></circle>
+            <circle cx="6" cy="12" r="3"></circle>
+            <circle cx="18" cy="19" r="3"></circle>
+            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="page-container">
+
+    <!-- ============================================================== -->
+    <!-- VIEW 1: PROMOTION SHOPPING VIEW                                -->
+    <!-- ============================================================== -->
+    <div class="view-content active" id="view-promotion">
+      <!-- Top Alert Ribbon -->
+      <div class="event-ticker">
+        <div class="ticker-content">
+          <span class="ticker-tag">⚡ 일 6세트 한정</span>
+          <span class="ticker-text">매일 점심 12:00 선착순 타임어택! 3종 중 2개 골라 담으면 20% 즉시 할인 (전 조합 9천원대)</span>
         </div>
-    </header>
-                    <div class="flex items-center space-x-2 font-mono text-xs text-slate-500">
-                        <span id="dataDateRangeText" class="bg-indigo-50 text-indigo-700 px-2.5 py-1 rounded-md font-medium">데이터 기간: -</span>
-                    </div>
-                </div>
+      </div>
 
-                <!-- Date Filter Section -->
-                <div class="flex flex-wrap items-center gap-3">
-                    <div class="flex items-center space-x-2 bg-white px-3 py-2 rounded-xl border border-slate-200 shadow-xs">
-                        <i class="fa-regular fa-calendar text-indigo-600"></i>
-                        <span class="text-xs font-semibold text-slate-500 uppercase">조회 기간</span>
-                    </div>
-                    <div class="flex items-center space-x-2">
-                        <input type="date" id="startDate" class="bg-white border border-slate-300 text-slate-800 text-sm rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 px-3 py-2 shadow-xs">
-                        <span class="text-slate-400 font-medium">~</span>
-                        <input type="date" id="endDate" class="bg-white border border-slate-300 text-slate-800 text-sm rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 px-3 py-2 shadow-xs">
-                    </div>
-                    <!-- Quick Date Range Buttons -->
-                    <div class="flex items-center space-x-1 bg-slate-100 p-1 rounded-xl text-xs font-medium text-slate-600">
-                        <button id="btnToday" class="px-2.5 py-1 rounded-lg hover:bg-white hover:shadow-xs transition-all">최신일</button>
-                        <button id="btn7Days" class="px-2.5 py-1 rounded-lg hover:bg-white hover:shadow-xs transition-all">7일</button>
-                        <button id="btn30Days" class="px-2.5 py-1 rounded-lg hover:bg-white hover:shadow-xs transition-all">30일</button>
-                        <button id="btnAll" class="px-2.5 py-1 rounded-lg bg-white shadow-xs text-indigo-600 font-semibold transition-all">전체기간</button>
-                    </div>
-                </div>
+      <!-- Hero Section -->
+      <section class="hero-section" id="hero">
+        <div class="hero-visual-card">
+          <div class="hero-badge-wrap">
+            <span class="badge-store">CENTRAL STORE EVENT</span>
+            <span class="badge-period">2026.10.21(수) ~ 11.03(화) · 14일간</span>
+          </div>
 
-                <!-- Store & Category Filters -->
-                <div class="flex flex-wrap items-center gap-3">
-                    <div class="min-w-[130px] flex-1 sm:flex-none">
-                        <select id="storeSelect" class="w-full bg-white border border-slate-300 text-slate-800 text-sm rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 px-3 py-2 shadow-xs">
-                            <option value="ALL">모든 점포</option>
-                        </select>
-                    </div>
-                    <div class="min-w-[130px] flex-1 sm:flex-none">
-                        <select id="categorySelect" class="w-full bg-white border border-slate-300 text-slate-800 text-sm rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 px-3 py-2 shadow-xs">
-                            <option value="ALL">모든 카테고리</option>
-                        </select>
-                    </div>
-                    <button id="applyFilterBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-sm px-4 py-2 rounded-xl transition-colors shadow-xs flex items-center justify-center space-x-1.5 min-w-[80px]">
-                        <i class="fa-solid fa-filter text-xs"></i>
-                        <span>조회</span>
-                    </button>
-                </div>
+          <h1 class="hero-title">
+            오늘의 간편식,<br>
+            <span class="highlight-text">내 맘대로</span> 골라 담자!
+          </h1>
+
+          <!-- Massive Discount Burst -->
+          <div class="discount-burst-container">
+            <div class="burst-sub-top">대상 상품 2개 이상 구매 시</div>
+            <div class="burst-main">
+              <span class="burst-num">20</span>
+              <div class="burst-right">
+                <span class="burst-percent">%</span>
+                <span class="burst-off">OFF</span>
+              </div>
             </div>
-        </section>
+            <div class="burst-sub-bottom">결제 합계 금액 20% 즉시 할인 (세트당 최대 2,480원 할인)</div>
+          </div>
 
-        <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <!-- Total Revenue -->
-            <div class="glass-panel p-5 rounded-2xl shadow-sm flex items-center justify-between">
-                <div>
-                    <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">총 매출액</p>
-                    <h3 id="kpiTotalRevenue" class="text-2xl font-extrabold text-slate-900 mt-1">0원</h3>
-                    <p id="kpiRevenueSub" class="text-xs text-slate-500 mt-1">총 할인액: 0원</p>
-                </div>
-                <div class="w-12 h-12 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-600 text-xl shadow-inner">
-                    <i class="fa-solid fa-won-sign"></i>
-                </div>
+          <div class="hero-mascot-row">
+            <div class="mascot-tag">
+              <span class="mascot-icon">🐥</span>
+              <span class="mascot-speech">"강제 묶음 탈피! 내가 원하는 2개만 쏙쏙!"</span>
+            </div>
+          </div>
+
+          <!-- Time Attack Countdown Panel -->
+          <div class="timeattack-box">
+            <div class="ta-header">
+              <div class="ta-title-wrap">
+                <span class="live-dot"></span>
+                <span class="ta-title">매일 점심 12:00 선착순 타임어택</span>
+              </div>
+              <span class="ta-status-tag" id="taStatusBadge">실시간 진행중</span>
             </div>
 
-            <!-- Total Quantity Sold -->
-            <div class="glass-panel p-5 rounded-2xl shadow-sm flex items-center justify-between">
-                <div>
-                    <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">총 판매수량</p>
-                    <h3 id="kpiTotalQty" class="text-2xl font-extrabold text-slate-900 mt-1">0개</h3>
-                    <p id="kpiAvgQty" class="text-xs text-slate-500 mt-1">건당 평균: 0개</p>
-                </div>
-                <div class="w-12 h-12 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-600 text-xl shadow-inner">
-                    <i class="fa-solid fa-boxes-packing"></i>
-                </div>
+            <div class="ta-timer-grid">
+              <div class="timer-unit">
+                <span class="timer-num" id="cdHours">00</span>
+                <span class="timer-lbl">시간</span>
+              </div>
+              <span class="timer-colon">:</span>
+              <div class="timer-unit">
+                <span class="timer-num" id="cdMinutes">00</span>
+                <span class="timer-lbl">분</span>
+              </div>
+              <span class="timer-colon">:</span>
+              <div class="timer-unit">
+                <span class="timer-num" id="cdSeconds">00</span>
+                <span class="timer-lbl">초</span>
+              </div>
             </div>
 
-            <!-- Total Transactions/Rows -->
-            <div class="glass-panel p-5 rounded-2xl shadow-sm flex items-center justify-between">
-                <div>
-                    <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">판매 건수</p>
-                    <h3 id="kpiTotalTransactions" class="text-2xl font-extrabold text-slate-900 mt-1">0건</h3>
-                    <p id="kpiAvgTicket" class="text-xs text-slate-500 mt-1">건당 평균: 0원</p>
+            <div class="ta-stock-bar">
+              <div class="stock-info">
+                <span>오늘의 선착순 한정 수량 잔여</span>
+                <span class="stock-count"><strong id="stockLeft">6</strong> / 6 세트 잔여 (엄격 통제)</span>
+              </div>
+              <div class="stock-track">
+                <div class="stock-fill" id="stockBarFill" style="width: 100%;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Quick Presets -->
+      <section class="presets-section">
+        <div class="section-heading">
+          <span class="section-sub">라이프스타일 4대 추천 조합</span>
+          <h2 class="section-title">고민 없이 원클릭으로 담기</h2>
+        </div>
+
+        <div class="preset-scroll-track">
+          <!-- Preset 1 -->
+          <button class="preset-card active" data-preset="balance">
+            <div class="preset-badge badge-green">① 영양 균형형</div>
+            <div class="preset-name">샐러드랩 + 불고기덮밥</div>
+            <div class="preset-desc">점심 든든 고기 밥 + 저녁 산뜻 채소랩</div>
+            <div class="preset-price-wrap">
+              <span class="preset-orig">12,100원</span>
+              <span class="preset-dc">9,680원</span>
+            </div>
+            <div class="preset-unit-price">1끼당 4,840원 (-20%)</div>
+          </button>
+
+          <!-- Preset 2 -->
+          <button class="preset-card" data-preset="tasty">
+            <div class="preset-badge badge-orange">② 가성비 균형형</div>
+            <div class="preset-name">샐러드랩 + 닭갈비볶음밥</div>
+            <div class="preset-desc">매콤한 점심 + 가벼운 저녁 식사</div>
+            <div class="preset-price-wrap">
+              <span class="preset-orig">11,700원</span>
+              <span class="preset-dc">9,360원</span>
+            </div>
+            <div class="preset-unit-price">1끼당 4,680원 (-20%)</div>
+          </button>
+
+          <!-- Preset 3 -->
+          <button class="preset-card" data-preset="hearty">
+            <div class="preset-badge badge-blue">③ 든든형 (밥류 2개)</div>
+            <div class="preset-name">덮밥 + 볶음밥</div>
+            <div class="preset-desc">점심 덮밥 + 저녁 볶음밥 (든든한 탄수화물)</div>
+            <div class="preset-price-wrap">
+              <span class="preset-orig">11,400원</span>
+              <span class="preset-dc">9,120원</span>
+            </div>
+            <div class="preset-unit-price">1끼당 4,560원 (-20%)</div>
+          </button>
+
+          <!-- Preset 4 -->
+          <button class="preset-card" data-preset="light">
+            <div class="preset-badge badge-purple">④ 가벼운형 (랩 2개)</div>
+            <div class="preset-name">샐러드랩 2개</div>
+            <div class="preset-desc">가벼운 점심 + 가벼운 저녁 (다이어트·건강식)</div>
+            <div class="preset-price-wrap">
+              <span class="preset-orig">12,400원</span>
+              <span class="preset-dc">9,920원</span>
+            </div>
+            <div class="preset-unit-price">1끼당 4,960원 (-20%)</div>
+          </button>
+        </div>
+      </section>
+
+      <!-- Interactive Combo Simulator -->
+      <section class="simulator-section" id="simulator">
+        <div class="section-heading">
+          <span class="section-sub">내 맘대로 터치해서 담아보세요!</span>
+          <h2 class="section-title">2종 골라담기 실시간 계산기</h2>
+          <p class="section-caption">원하는 상품을 2개 이상 선택하면 자동으로 <strong>20% 즉시 할인</strong>이 적용됩니다. (동일 상품 중복 가능)</p>
+        </div>
+
+        <!-- Product Selection List -->
+        <div class="product-selection-grid">
+          <!-- Item 1: 훈제오리 샐러드랩 -->
+          <div class="sim-product-card" data-id="saladwrap" data-price="6200" data-name="훈제오리 샐러드랩">
+            <div class="sim-card-top">
+              <div class="sim-img-wrap">
+                <img src="./카드뉴스4.webp" alt="훈제오리 샐러드랩" class="sim-thumb" style="object-position: 28% 55%;">
+                <span class="sim-tag">고객 만족도 1위</span>
+              </div>
+              <div class="sim-info">
+                <div class="sim-header-row">
+                  <h3 class="sim-title">훈제오리 샐러드랩</h3>
+                  <span class="sim-stat-pill">매출 -9.38% 집중지원</span>
                 </div>
-                <div class="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600 text-xl shadow-inner">
-                    <i class="fa-solid fa-receipt"></i>
+                <p class="sim-subtitle">담백한 훈제오리와 신선 아삭한 채소의 산뜻한 조합</p>
+                <div class="sim-price-row">
+                  <span class="sim-regular-price">정상가 <strong>6,200원</strong></span>
+                  <span class="sim-dc-hint">2개 담을 때 끼당 4,960원</span>
                 </div>
+              </div>
+            </div>
+            <div class="sim-card-bottom">
+              <div class="qty-control">
+                <button class="btn-qty minus" data-action="minus" aria-label="수량 감소">-</button>
+                <span class="qty-display" id="qty-saladwrap">1</span>
+                <button class="btn-qty plus" data-action="plus" aria-label="수량 증가">+</button>
+              </div>
+              <div class="item-subtotal" id="subtotal-saladwrap">6,200원</div>
+            </div>
+          </div>
+
+          <!-- Item 2: 한끼 소불고기덮밥 -->
+          <div class="sim-product-card" data-id="beefbowl" data-price="5900" data-name="한끼 소불고기덮밥">
+            <div class="sim-card-top">
+              <div class="sim-img-wrap">
+                <img src="./카드뉴스4.webp" alt="한끼 소불고기덮밥" class="sim-thumb" style="object-position: 18% 41%;">
+                <span class="sim-tag best">든든한 고기 한끼</span>
+              </div>
+              <div class="sim-info">
+                <div class="sim-header-row">
+                  <h3 class="sim-title">한끼 소불고기덮밥</h3>
+                  <span class="sim-stat-pill">매출 -3.89% 회복타깃</span>
+                </div>
+                <p class="sim-subtitle">특제 단짠 소스로 볶아낸 풍성한 소불고기와 든든한 밥</p>
+                <div class="sim-price-row">
+                  <span class="sim-regular-price">정상가 <strong>5,900원</strong></span>
+                  <span class="sim-dc-hint">2개 담을 때 끼당 4,720원</span>
+                </div>
+              </div>
+            </div>
+            <div class="sim-card-bottom">
+              <div class="qty-control">
+                <button class="btn-qty minus" data-action="minus" aria-label="수량 감소">-</button>
+                <span class="qty-display" id="qty-beefbowl">1</span>
+                <button class="btn-qty plus" data-action="plus" aria-label="수량 증가">+</button>
+              </div>
+              <div class="item-subtotal" id="subtotal-beefbowl">5,900원</div>
+            </div>
+          </div>
+
+          <!-- Item 3: 매콤 닭갈비볶음밥 -->
+          <div class="sim-product-card" data-id="chickenrice" data-price="5500" data-name="매콤 닭갈비볶음밥">
+            <div class="sim-card-top">
+              <div class="sim-img-wrap">
+                <img src="./카드뉴스4.webp" alt="매콤 닭갈비볶음밥" class="sim-thumb" style="object-position: 36% 41%;">
+                <span class="sim-tag spicy">매콤 가성비 끝판왕</span>
+              </div>
+              <div class="sim-info">
+                <div class="sim-header-row">
+                  <h3 class="sim-title">매콤 닭갈비볶음밥</h3>
+                  <span class="sim-stat-pill">가장 실속 있는 5,500원</span>
+                </div>
+                <p class="sim-subtitle">불맛 가득 매콤 소스와 쫄깃한 닭갈비의 중독성</p>
+                <div class="sim-price-row">
+                  <span class="sim-regular-price">정상가 <strong>5,500원</strong></span>
+                  <span class="sim-dc-hint">2개 담을 때 끼당 4,400원</span>
+                </div>
+              </div>
+            </div>
+            <div class="sim-card-bottom">
+              <div class="qty-control">
+                <button class="btn-qty minus" data-action="minus" aria-label="수량 감소">-</button>
+                <span class="qty-display" id="qty-chickenrice">0</span>
+                <button class="btn-qty plus" data-action="plus" aria-label="수량 증가">+</button>
+              </div>
+              <div class="item-subtotal" id="subtotal-chickenrice">0원</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Real-time Bill / Calculation Receipt Card -->
+        <div class="calculation-receipt-card" id="receiptCard">
+          <div class="calc-status-banner" id="calcStatusBanner">
+            <span class="status-icon">🎉</span>
+            <span class="status-msg"><strong>20% 할인 조건 충족!</strong> (2개 이상 선택 완료 · 전 조합 9천원대)</span>
+          </div>
+
+          <div class="receipt-inner">
+            <div class="receipt-header">
+              <div class="receipt-title-wrap">
+                <span class="receipt-title">선택 상품 실시간 정산</span>
+                <span class="receipt-total-count" id="totalCountBadge">총 2개 선택</span>
+              </div>
+              <button class="btn-reset" id="btnReset">전체 비우기</button>
             </div>
 
-            <!-- Event Promo Share -->
-            <div class="glass-panel p-5 rounded-2xl shadow-sm flex items-center justify-between">
-                <div>
-                    <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">행사 적용 비율</p>
-                    <h3 id="kpiPromoRatio" class="text-2xl font-extrabold text-slate-900 mt-1">0%</h3>
-                    <p id="kpiPromoCount" class="text-xs text-slate-500 mt-1">행사 건수: 0건</p>
-                </div>
-                <div class="w-12 h-12 bg-amber-50 rounded-2xl flex items-center justify-center text-amber-600 text-xl shadow-inner">
-                    <i class="fa-solid fa-tags"></i>
-                </div>
-            </div>
-        </section>
-
-        <section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <!-- Daily Trend Chart -->
-            <div class="lg:col-span-2 glass-panel p-5 rounded-2xl shadow-sm flex flex-col justify-between">
-                <div class="flex items-center justify-between mb-4">
-                    <div>
-                        <h2 class="text-base font-bold text-slate-800">일자별 매출 추이 (YYYY-MM-DD)</h2>
-                        <p class="text-xs text-slate-500">선택한 기간 동안의 일별 매출액 변화</p>
-                    </div>
-                    <div class="flex items-center space-x-2 text-xs">
-                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
-                            <span class="w-2 h-2 mr-1.5 bg-indigo-600 rounded-full"></span>매출액
-                        </span>
-                    </div>
-                </div>
-                <div class="relative w-full h-72">
-                    <canvas id="dailyTrendChart"></canvas>
-                </div>
+            <!-- Selected Items Summary Chips -->
+            <div class="selected-chips-row" id="selectedChipsContainer">
+              <span class="chip-item">훈제오리 샐러드랩 1개</span>
+              <span class="chip-item">한끼 소불고기덮밥 1개</span>
             </div>
 
-            <!-- Category Distribution Chart -->
-            <div class="glass-panel p-5 rounded-2xl shadow-sm flex flex-col justify-between">
-                <div class="mb-4">
-                    <h2 class="text-base font-bold text-slate-800">카테고리별 매출 비중</h2>
-                    <p class="text-xs text-slate-500">카테고리별 매출 합계 기여도</p>
+            <!-- Price Calculation Rows -->
+            <div class="price-breakdown">
+              <div class="price-row">
+                <span class="p-label">정상 합계 금액</span>
+                <span class="p-val" id="receiptOriginalPrice">12,100원</span>
+              </div>
+              <div class="price-row dc-row" id="receiptDcRow">
+                <span class="p-label">
+                  <span class="dc-badge">20% DC</span> 즉시 할인 차감액
+                </span>
+                <span class="p-val dc-val" id="receiptDiscountAmount">-2,420원</span>
+              </div>
+              <div class="price-divider"></div>
+              <div class="price-row final-row">
+                <div class="final-label-group">
+                  <span class="p-final-label">최종 결제 예상가</span>
+                  <span class="p-sub-label">센트럴점 POS 계산대 즉시 20% 자동 차감</span>
                 </div>
-                <div class="relative w-full h-72 flex items-center justify-center">
-                    <canvas id="categoryChart"></canvas>
+                <div class="final-price-group">
+                  <span class="final-price" id="receiptFinalPrice">9,680</span>
+                  <span class="final-won">원</span>
                 </div>
-            </div>
-        </section>
-
-        <section class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <!-- Top 5 Products Bar Chart -->
-            <div class="glass-panel p-5 rounded-2xl shadow-sm">
-                <div class="mb-4">
-                    <h2 class="text-base font-bold text-slate-800">상위 매출 상품 TOP 5</h2>
-                    <p class="text-xs text-slate-500">가장 높은 매출을 기록한 대표 상품</p>
-                </div>
-                <div class="relative w-full h-64">
-                    <canvas id="topProductsChart"></canvas>
-                </div>
-            </div>
-
-            <!-- Store Sales Comparison Bar Chart -->
-            <div class="glass-panel p-5 rounded-2xl shadow-sm">
-                <div class="mb-4">
-                    <h2 class="text-base font-bold text-slate-800">점포별 매출 비교</h2>
-                    <p class="text-xs text-slate-500">각 점포별 총 매출 실적</p>
-                </div>
-                <div class="relative w-full h-64">
-                    <canvas id="storeChart"></canvas>
-                </div>
-            </div>
-        </section>
-
-        <section class="glass-panel rounded-2xl shadow-sm overflow-hidden border border-slate-200">
-            <div class="p-4 sm:p-5 border-b border-slate-200 bg-white/50 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-                <div>
-                    <h2 class="text-base font-bold text-slate-800">상세 판매 내역</h2>
-                    <p class="text-xs text-slate-500">날짜 형식: YYYY-MM-DD. 모든 날짜별·항목별 원본 데이터</p>
-                </div>
-                <div class="relative w-full sm:w-64">
-                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
-                    <input type="text" id="searchInput" placeholder="상품명, 상품코드 검색..." class="w-full bg-white border border-slate-300 text-slate-800 text-xs rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 pl-9 pr-3 py-2 shadow-xs">
-                </div>
+              </div>
             </div>
 
-            <div class="overflow-x-auto custom-scrollbar">
-                <table class="w-full text-left border-collapse text-xs">
-                    <thead>
-                        <tr class="bg-slate-100/80 text-slate-600 font-semibold uppercase tracking-wider border-b border-slate-200">
-                            <th class="py-3 px-4 min-w-[110px]">일자 (YYYY-MM-DD)</th>
-                            <th class="py-3 px-4 min-w-[90px]">점포</th>
-                            <th class="py-3 px-4 min-w-[100px]">카테고리</th>
-                            <th class="py-3 px-4 min-w-[90px]">상품코드</th>
-                            <th class="py-3 px-4 min-w-[140px]">상품명</th>
-                            <th class="py-3 px-4 text-right min-w-[80px]">판매수량</th>
-                            <th class="py-3 px-4 text-right min-w-[90px]">정상단가</th>
-                            <th class="py-3 px-4 text-right min-w-[80px]">할인액</th>
-                            <th class="py-3 px-4 text-right min-w-[100px]">매출액</th>
-                            <th class="py-3 px-4 text-center min-w-[80px]">행사적용</th>
-                        </tr>
-                    </thead>
-                    <tbody id="dataTableBody" class="divide-y divide-slate-200/70 bg-white/40">
-                        <!-- Table Rows Rendered via JS -->
-                    </tbody>
-                </table>
+            <!-- Unit Meal Value Banner -->
+            <div class="meal-unit-banner" id="mealUnitBanner">
+              <div class="meal-tag">실속 체감 혜택</div>
+              <div class="meal-text">
+                1끼 환산 단 <strong><span id="mealUnitPrice">4,840</span>원</strong>으로 삼각김밥 대신 고품질 2끼 해결!
+              </div>
             </div>
 
-            <!-- Table Pagination / Summary Footer -->
-            <div class="p-4 bg-slate-50 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-3">
-                <div id="tableInfo">총 0개의 항목 중 0 - 0 표시</div>
-                <div class="flex items-center space-x-2" id="paginationControls">
-                    <button id="prevPageBtn" class="px-3 py-1.5 bg-white border border-slate-300 rounded-lg hover:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">이전</button>
-                    <span id="pageIndicator" class="px-2 font-semibold text-slate-700">1 / 1</span>
-                    <button id="nextPageBtn" class="px-3 py-1.5 bg-white border border-slate-300 rounded-lg hover:bg-slate-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">다음</button>
-                </div>
+            <!-- Action Button Group -->
+            <div class="receipt-action-group">
+              <button class="btn-primary-action" id="btnOpenBarcode">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+                  <path d="M6 8v8"></path>
+                  <path d="M10 8v8"></path>
+                  <path d="M14 8v8"></path>
+                  <path d="M18 8v8"></path>
+                </svg>
+                <span>매장 전용 모바일 바코드 발급받기</span>
+              </button>
+              <button class="btn-secondary-action" id="btnShareComb">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+                  <polyline points="16 6 12 2 8 6"></polyline>
+                  <line x1="12" y1="2" x2="12" y2="15"></line>
+                </svg>
+                <span>이 조합 친구에게 카카오톡/링크 공유하기</span>
+              </button>
             </div>
-        </section>
-    </main>
+          </div>
+        </div>
+      </section>
 
-    <!-- Custom Notification Toast -->
-    <div id="toast" class="fixed bottom-5 right-5 bg-slate-900 text-white text-xs px-4 py-3 rounded-xl shadow-lg transform translate-y-20 opacity-0 transition-all duration-300 flex items-center space-x-2 z-50">
-        <i class="fa-solid fa-circle-info text-indigo-400 text-sm" id="toastIcon"></i>
-        <span id="toastMessage">알림 메시지</span>
+      <!-- Poster Showcase Section -->
+      <section class="poster-section">
+        <div class="section-heading">
+          <span class="section-sub">이마트 센트럴점 공식 전단 포스터</span>
+          <h2 class="section-title">행사 한눈에 보기</h2>
+        </div>
+        <div class="poster-display-card">
+          <img src="./간편식 20% 할인 이벤트.png" alt="간편식 20% 할인 이벤트 공식 포스터" class="poster-full-img" loading="lazy">
+          <div class="poster-info-box">
+            <div class="poster-point">
+              <span class="point-num">01</span>
+              <div class="point-text">
+                <strong>강제 묶음 전면 탈피</strong>
+                <p>3종 중 동일 상품 중복 포함 원하는 메뉴 2개 자유 선택</p>
+              </div>
+            </div>
+            <div class="poster-point">
+              <span class="point-num">02</span>
+              <div class="point-text">
+                <strong>전 조합 9천원대 실현 (1끼 4,000원대)</strong>
+                <p>세트당 최대 2,480원 즉시 할인으로 초저가 대체재 대비 압도적 품질 가성비</p>
+              </div>
+            </div>
+            <div class="poster-point">
+              <span class="point-num">03</span>
+              <div class="point-text">
+                <strong>매일 점심 12:00 선착순 타임어택</strong>
+                <p>총 예산 20만 원 엄격 통제 및 매대 골든존 희소성 극대화</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Card News Carousel -->
+      <section class="story-section" id="story">
+        <div class="section-heading">
+          <span class="section-sub">Customer Voice & Solution</span>
+          <h2 class="section-title">왜 골라담는 20% 할인으로 바뀌었을까요?</h2>
+          <p class="section-caption">고객 설문조사(N=20)를 통해 발견한 혼밥 고객님들의 목소리입니다.</p>
+        </div>
+
+        <div class="carousel-container">
+          <div class="carousel-track" id="cardNewsTrack">
+            <!-- Slide 1 -->
+            <div class="carousel-slide active" data-index="0">
+              <img src="./카드뉴스2.webp" alt="카드뉴스 2 - 고객 목소리에 집중했습니다" class="slide-img">
+              <div class="slide-caption">
+                <h4>혼밥족 75%는 혼자 식사 해결, 65%는 묶음 구매 의향 확인!</h4>
+                <p>영양 균형(30%)과 할인 혜택(35%)에 대한 강력한 구매 수요 가설을 검증했습니다.</p>
+              </div>
+            </div>
+            <!-- Slide 2 -->
+            <div class="carousel-slide" data-index="1">
+              <img src="./카드뉴스3.webp" alt="카드뉴스 3 - 원하는 2가지를 자유롭게" class="slide-img">
+              <div class="slide-caption">
+                <h4>"샐러드랩 1 + 덮밥 1 공급자 강제 구성은 이제 그만!"</h4>
+                <p>1인 고객에게 양과 가격 부담을 주던 강제 구성을 과감히 버리고 자율 선택권을 부여했습니다.</p>
+              </div>
+            </div>
+            <!-- Slide 3 -->
+            <div class="carousel-slide" data-index="2">
+              <img src="./카드뉴스4.webp" alt="카드뉴스 4 - 든든하게 vs 가볍게" class="slide-img">
+              <div class="slide-caption">
+                <h4>취향대로 고르는 재미! 든든하게 VS 가볍게</h4>
+                <p>어떤 조합을 골라도 전 조합 9,000원대 실속 가격으로 든든한 2끼를 해결합니다.</p>
+              </div>
+            </div>
+            <!-- Slide 4 -->
+            <div class="carousel-slide" data-index="3">
+              <img src="./카드뉴스5.webp" alt="카드뉴스 5 - 2개 이상 20% 즉시 할인" class="slide-img">
+              <div class="slide-caption">
+                <h4>세트당 최대 2,480원 즉시 할인, 1끼 단 4,000원대!</h4>
+                <p>삼각김밥/라면으로 이탈하던 고객에게 정통 간편식의 프리미엄 가성비를 제공합니다.</p>
+              </div>
+            </div>
+            <!-- Slide 5 -->
+            <div class="carousel-slide" data-index="4">
+              <img src="./카드뉴스6.webp" alt="카드뉴스 6 - 매일 점심 12:00 선착순 타임어택" class="slide-img">
+              <div class="slide-caption">
+                <h4>매일 점심 12:00 선착순 타임어택!</h4>
+                <p>오직 이마트 센트럴점 냉장 매대 골든존(2~3단)에서만 한정 수량으로 진행됩니다.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="carousel-controls">
+            <button class="btn-caro prev" id="btnPrevSlide" aria-label="이전 카드">‹</button>
+            <div class="carousel-dots" id="carouselDots">
+              <span class="dot active" data-index="0"></span>
+              <span class="dot" data-index="1"></span>
+              <span class="dot" data-index="2"></span>
+              <span class="dot" data-index="3"></span>
+              <span class="dot" data-index="4"></span>
+            </div>
+            <button class="btn-caro next" id="btnNextSlide" aria-label="다음 카드">›</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Store Golden Zone Guide -->
+      <section class="store-guide-section" id="storeGuide">
+        <div class="section-heading">
+          <span class="section-sub">Where to Find</span>
+          <h2 class="section-title">이마트 센트럴점 매대 찾는 법</h2>
+        </div>
+
+        <div class="store-guide-grid">
+          <div class="guide-card">
+            <div class="guide-icon">📍</div>
+            <h3>행사 위치</h3>
+            <p><strong>이마트 센트럴점 B1 식품관</strong><br>냉장 간편식 코너</p>
+          </div>
+          <div class="guide-card highlight-card">
+            <div class="guide-icon">⭐</div>
+            <h3>골든존 진열 팁</h3>
+            <p>서서 바라보는 <strong>상단 2~3단 눈높이 진열대</strong>에서 3종 상품이 나란히 인접 진열되어 있습니다.</p>
+          </div>
+          <div class="guide-card">
+            <div class="guide-icon">💳</div>
+            <h3>자동 20% 차감</h3>
+            <p>대상 3종 중 2개 이상 계산 시 <strong>POS에서 20% 자동 차감</strong>됩니다.</p>
+          </div>
+          <div class="guide-card">
+            <div class="guide-icon">⏰</div>
+            <h3>타임어택 시간</h3>
+            <p><strong>매일 12:00 정각 개시</strong><br>(선착순 마감 시 자동 종료)</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- FAQ Section -->
+      <section class="faq-section">
+        <div class="section-heading">
+          <span class="section-sub">Notice & FAQ</span>
+          <h2 class="section-title">자주 묻는 질문</h2>
+        </div>
+
+        <div class="accordion-list">
+          <div class="accordion-item">
+            <button class="accordion-btn">
+              <span>Q. 같은 상품으로만 2개 사도 20% 할인이 되나요?</span>
+              <span class="acc-chevron">▾</span>
+            </button>
+            <div class="accordion-body">
+              <p><strong>네, 가능합니다!</strong> 훈제오리 샐러드랩 2개, 소불고기덮밥 2개 등 동일 상품 2개 이상 구매 시에도 동일하게 20% 할인이 적용됩니다.</p>
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <button class="accordion-btn">
+              <span>Q. 3개를 구매하면 어떻게 계산되나요?</span>
+              <span class="acc-chevron">▾</span>
+            </button>
+            <div class="accordion-body">
+              <p>대상 3종 상품 2개 이상 구매 시 <strong>선택하신 대상 상품 전체 합계 금액에 대해 20% 즉시 할인</strong>이 적용됩니다.</p>
+            </div>
+          </div>
+
+          <div class="accordion-item">
+            <button class="accordion-btn">
+              <span>Q. 타 할인 쿠폰이나 제휴 할인과 중복 적용이 되나요?</span>
+              <span class="acc-chevron">▾</span>
+            </button>
+            <div class="accordion-body">
+              <p>본 프로모션은 자체 20% 특가 지원 행사로 타 제휴 할인 쿠폰 및 마감 세일과의 중복 적용은 불가합니다.</p>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
 
-    <script>
-        const sampleRawData = [
-            { 일자: "2026-08-15", 점포: "센트럴점", 카테고리: "냉장 간편식", 상품코드: "RM-101", 상품명: "한끼 소불고기", 판매수량: 30, 정상단가: 5900, 할인액: 0, 매출액: 177000, 행사적용: "N" },
-            { 일자: "2026-08-20", 점포: "강남점", 카테고리: "신선식품", 상품코드: "FR-201", 상품명: "국내산 삼겹살", 판매수량: 25, 정상단가: 13900, 할인액: 0, 매출액: 347500, 행사적용: "N" },
-            { 일자: "2026-09-01", 점포: "홍대점", 카테고리: "음료/디저트", 상품코드: "BV-301", 상품명: "유기농 착즙주스", 판매수량: 60, 정상단가: 3500, 할인액: 0, 매출액: 210000, 행사적용: "N" },
-            { 일자: "2026-09-15", 점포: "센트럴점", 카테고리: "냉장 간편식", 상품코드: "RM-102", 상품명: "매콤 닭갈비", 판매수량: 42, 정상단가: 5500, 할인액: 0, 매출액: 231000, 행사적용: "N" },
-            { 일자: "2026-10-01", 점포: "센트럴점", 카테고리: "냉장 간편식", 상품코드: "RM-101", 상품명: "한끼 소불고기", 판매수량: 44, 정상단가: 5900, 할인액: 0, 매출액: 259600, 행사적용: "N" },
-            { 일자: "2026-10-02", 점포: "센트럴점", 카테고리: "냉장 간편식", 상품코드: "RM-102", 상품명: "매콤 닭갈비", 판매수량: 49, 정상단가: 5500, 할인액: 0, 매출액: 269500, 행사적용: "N" },
-            { 일자: "2026-10-03", 점포: "센트럴점", 카테고리: "냉장 간편식", 상품코드: "RM-103", 상품명: "훈제오리 슬라이스", 판매수량: 58, 정상단가: 6200, 할인액: 0, 매출액: 359600, 행사적용: "N" },
-            { 일자: "2026-10-04", 점포: "센트럴점", 카테고리: "냉장 간편식", 상품코드: "RM-104", 상품명: "우삼겹 된장찌개", 판매수량: 46, 정상단가: 6800, 할인액: 0, 매출액: 312800, 행사적용: "N" },
-            { 일자: "2026-10-05", 점포: "센트럴점", 카테고리: "냉장 간편식", 상품코드: "RM-105", 상품명: "새우 로제파스타", 판매수량: 46, 정상단가: 7200, 할인액: 0, 매출액: 331200, 행사적용: "N" },
-            { 일자: "2026-10-06", 점포: "센트럴점", 카테고리: "냉장 간편식", 상품코드: "RM-106", 상품명: "닭가슴살 샐러드", 판매수량: 51, 정상단가: 5200, 할인액: 0, 매출액: 265200, 행사적용: "N" },
-            { 일자: "2026-10-07", 점포: "센트럴점", 카테고리: "신선식품", 상품코드: "FR-201", 상품명: "국내산 삼겹살", 판매수량: 24, 정상단가: 13900, 할인액: 0, 매출액: 333600, 행사적용: "N" },
-            { 일자: "2026-10-08", 점포: "센트럴점", 카테고리: "신선식품", 상품코드: "FR-202", 상품명: "친환경 방울토마토", 판매수량: 33, 정상단가: 4900, 할인액: 0, 매출액: 161700, 행사적용: "N" },
-            { 일자: "2026-10-09", 점포: "강남점", 카테고리: "신선식품", 상품코드: "FR-201", 상품명: "국내산 삼겹살", 판매수량: 40, 정상단가: 13900, 할인액: 20000, 매출액: 536000, 행사적용: "Y" },
-            { 일자: "2026-10-10", 점포: "강남점", 카테고리: "음료/디저트", 상품코드: "BV-301", 상품명: "유기농 착즙주스", 판매수량: 70, 정상단가: 3500, 할인액: 0, 매출액: 245000, 행사적용: "N" },
-            { 일자: "2026-10-11", 점포: "홍대점", 카테고리: "음료/디저트", 상품코드: "BV-302", 상품명: "프리미엄 콜드브루", 판매수량: 85, 정상단가: 4000, 할인액: 10000, 매출액: 330000, 행사적용: "Y" },
-            { 일자: "2026-10-12", 점포: "센트럴점", 카테고리: "냉장 간편식", 상품코드: "RM-101", 상품명: "한끼 소불고기", 판매수량: 50, 정상단가: 5900, 할인액: 5900, 매출액: 289100, 행사적용: "Y" }
-        ];
+    <!-- ============================================================== -->
+    <!-- VIEW 2: DATA INSIGHTS & BACKGROUND VIEW (기획 근거 데이터)      -->
+    <!-- ============================================================== -->
+    <div class="view-content" id="view-data-insight">
+      <section class="data-view-section">
+        <div class="data-doc-badge">
+          <span>문서번호: PLAN-20261014-FINAL</span>
+          <span>부서: 데이터 리터러시 프로모션팀</span>
+        </div>
 
-        // State variables
-        let dataset = [];
-        let filteredDataset = [];
-        let chartInstances = {};
-        let currentPage = 1;
-        const pageSize = 8;
+        <div class="section-heading">
+          <span class="section-sub">Why We Started</span>
+          <h2 class="section-title">실적 데이터 분석 (문제 발원)</h2>
+          <p class="section-caption">센트럴점 전체 매출은 성장세(+1.28%)였으나, 냉장 간편식 카테고리는 -1.60% 역성장했습니다.</p>
+        </div>
 
-        // Initialize Application on Load
-        window.addEventListener('DOMContentLoaded', () => {
-            loadData(sampleRawData);
-            setupEventListeners();
-        });
+        <!-- Metric Scorecards -->
+        <div class="metric-card-grid">
+          <div class="metric-card warning-card">
+            <span class="m-label">센트럴점 전체 매출</span>
+            <span class="m-val success">+1.28%</span>
+            <span class="m-sub">안정적 신장세 유지</span>
+          </div>
+          <div class="metric-card danger-card">
+            <span class="m-label">냉장 간편식 카테고리</span>
+            <span class="m-val danger">-1.60%</span>
+            <span class="m-sub">카테고리 역성장 심화</span>
+          </div>
+          <div class="metric-card alert-card">
+            <span class="m-label">핵심 3종 상품 매출</span>
+            <span class="m-val alert">-5.41%</span>
+            <span class="m-sub">1,046.8만 → 990.2만 원 (-56.6만 원)</span>
+          </div>
+        </div>
 
-        function loadData(rawData) {
-            dataset = rawData.map((item, idx) => {
-                // Handle flexible keys (Korean column names)
-                let rawDate = item['일자'] || item['날짜'] || item['date'] || item[Object.keys(item)[0]];
-                let store = item['점포'] || item['지점'] || item['store'] || '본점';
-                let category = item['카테고리'] || item['분류'] || item['category'] || '기타';
-                let code = item['상품코드'] || item['코드'] || item['code'] || `P-${100 + idx}`;
-                let name = item['상품명'] || item['품명'] || item['name'] || `상품 ${idx + 1}`;
-                let qty = parseFloat(item['판매수량'] || item['수량'] || item['qty'] || 1);
-                let price = parseFloat(item['정상단가'] || item['단가'] || item['price'] || 0);
-                let discount = parseFloat(item['할인액'] || item['할인'] || item['discount'] || 0);
-                let revenue = parseFloat(item['매출액'] || item['매출'] || item['revenue'] || (qty * price - discount));
-                let promo = String(item['행사적용'] || item['행사'] || item['promo'] || 'N').trim().toUpperCase();
+        <!-- 3 Items Decline Breakdown Chart -->
+        <div class="data-chart-box">
+          <h3 class="chart-box-title">📉 매출 급감 핵심 3종 세부 내역</h3>
+          <div class="chart-bar-list">
+            <div class="chart-bar-item">
+              <div class="c-info">
+                <span class="c-name">훈제오리 샐러드랩</span>
+                <span class="c-val danger">-9.38% (-35.3만 원)</span>
+              </div>
+              <div class="c-track">
+                <div class="c-fill fill-red" style="width: 78%;"></div>
+              </div>
+            </div>
 
-                return {
-                    일자: formatDateToYYYYMMDD(rawDate, idx),
-                    점포: String(store).trim(),
-                    카테고리: String(category).trim(),
-                    상품코드: String(code).trim(),
-                    상품명: String(name).trim(),
-                    판매수량: isNaN(qty) ? 0 : qty,
-                    정상단가: isNaN(price) ? 0 : price,
-                    할인액: isNaN(discount) ? 0 : discount,
-                    매출액: isNaN(revenue) ? (qty * price - discount) : revenue,
-                    행사적용: promo === 'Y' || promo === 'TRUE' || promo === 'O' || promo === 'YES' ? 'Y' : 'N'
-                };
-            });
+            <div class="chart-bar-item">
+              <div class="c-info">
+                <span class="c-name">한끼 소불고기덮밥</span>
+                <span class="c-val alert">-3.89% (-13.5만 원)</span>
+              </div>
+              <div class="c-track">
+                <div class="c-fill fill-orange" style="width: 45%;"></div>
+              </div>
+            </div>
 
-            populateFilterDropdowns();
-            setDateRangeLimits();
-            applyFilters();
-        }
+            <div class="chart-bar-item">
+              <div class="c-info">
+                <span class="c-name">매콤 닭갈비볶음밥</span>
+                <span class="c-val alert">-2.40% (-7.7만 원)</span>
+              </div>
+              <div class="c-track">
+                <div class="c-fill fill-yellow" style="width: 32%;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
 
-        function formatDateToYYYYMMDD(val, index = 0) {
-            if (!val) return '2026-10-01';
-            let str = String(val).trim();
-            
-            // Handle Excel damaged values ("#######") by checking adjacent dates or giving clean fallbacks
-            if (str.startsWith('#') || str === '') {
-                let baseDate = new Date(2026, 7, 1); // Starting August 2026 (Month 7 is August)
-                baseDate.setDate(baseDate.getDate() + (index % 60));
-                let yyyy = baseDate.getFullYear();
-                let mm = String(baseDate.getMonth() + 1).padStart(2, '0');
-                let dd = String(baseDate.getDate()).padStart(2, '0');
-                return `${yyyy}-${mm}-${dd}`;
-            }
+        <!-- Customer Survey Visual Infographic (N=20) -->
+        <div class="section-heading" style="margin-top: 32px;">
+          <span class="section-sub">Customer Research Data</span>
+          <h2 class="section-title">고객 사전 설문조사 결과 (N=20)</h2>
+          <p class="section-caption">20명의 실제 구매 고객 정량/정성 조사에서 도출된 핵심 데이터입니다.</p>
+        </div>
 
-            // Regex match for YYYYMMDD, YYYY-MM-DD, YYYY/MM/DD, YYYY.MM.DD
-            let match = str.match(/(\d{4})[\.\/\-]?(\d{1,2})[\.\/\-]?(\d{1,2})/);
-            if (match) {
-                let yyyy = match[1];
-                let mm = match[2].padStart(2, '0');
-                let dd = match[3].padStart(2, '0');
-                return `${yyyy}-${mm}-${dd}`;
-            }
+        <div class="survey-grid">
+          <!-- Stat 1 -->
+          <div class="survey-card">
+            <div class="survey-donut-stat">
+              <span class="donut-num">75%</span>
+              <span class="donut-label">1인 단독 식사</span>
+            </div>
+            <h4>1인 식사 목적 (75%)</h4>
+            <p>혼자 빠르게 해결하는 단독 식사가 절대 다수로 2인분 강제 구성에 큰 부담</p>
+          </div>
 
-            let parsed = new Date(str);
-            if (!isNaN(parsed.getTime())) {
-                let yyyy = parsed.getFullYear();
-                let mm = String(parsed.getMonth() + 1).padStart(2, '0');
-                let dd = String(parsed.getDate()).padStart(2, '0');
-                return `${yyyy}-${mm}-${dd}`;
-            }
+          <!-- Stat 2 -->
+          <div class="survey-card">
+            <div class="survey-donut-stat color-orange">
+              <span class="donut-num">65%</span>
+              <span class="donut-label">묶음 구매 의향</span>
+            </div>
+            <h4>동시 구매 수요 검증 (65%)</h4>
+            <p>영양 균형 목적 30% + 혜택 시 구매 35%로 합리적 번들링 수요 존재 확인</p>
+          </div>
 
-            return str;
-        }
+          <!-- Stat 3 -->
+          <div class="survey-card">
+            <div class="survey-donut-stat color-red">
+              <span class="donut-num">65%</span>
+              <span class="donut-label">고객 이탈의 본질</span>
+            </div>
+            <h4>초저가 대체재 이동 (65%)</h4>
+            <p>삼각김밥/라면 이동 35% + 단품 가성비 부담 30%로 만 원 초과 시 구매 포기</p>
+          </div>
 
-        // Populate dropdown options dynamically from dataset
-        function populateFilterDropdowns() {
-            const stores = [...new Set(dataset.map(d => d.점포))].filter(Boolean).sort();
-            const categories = [...new Set(dataset.map(d => d.카테고리))].filter(Boolean).sort();
+          <!-- Stat 4 -->
+          <div class="survey-card">
+            <div class="survey-donut-stat color-green">
+              <span class="donut-num">85%</span>
+              <span class="donut-label">홍보 집중 접점</span>
+            </div>
+            <h4>홍보 접점 집중도 (85%)</h4>
+            <p>냉장 매대 앞 65% + 가격표 옆 20%로 인스토어 골든존 POP 효과 입증</p>
+          </div>
+        </div>
 
-            const storeSelect = document.getElementById('storeSelect');
-            storeSelect.innerHTML = '<option value="ALL">모든 점포</option>' + 
-                stores.map(s => `<option value="${s}">${s}</option>`).join('');
-
-            const categorySelect = document.getElementById('categorySelect');
-            categorySelect.innerHTML = '<option value="ALL">모든 카테고리</option>' + 
-                categories.map(c => `<option value="${c}">${c}</option>`).join('');
-        }
-
-        // Set date filter inputs dynamically to cover all loaded data (August, September, October, etc.)
-        function setDateRangeLimits() {
-            if (dataset.length === 0) return;
-            const dates = dataset.map(d => d.일자).filter(Boolean).sort();
-            const minDate = dates[0];
-            const maxDate = dates[dates.length - 1];
-
-            const startDateInput = document.getElementById('startDate');
-            const endDateInput = document.getElementById('endDate');
-
-            startDateInput.min = minDate;
-            startDateInput.max = maxDate;
-            endDateInput.min = minDate;
-            endDateInput.max = maxDate;
-
-            startDateInput.value = minDate;
-            endDateInput.value = maxDate;
-
-            document.getElementById('dataDateRangeText').textContent = `데이터 기간: ${minDate} ~ ${maxDate}`;
-        }
-
-        // Format Number to KRW Currency
-        function formatNumber(num) {
-            return new Intl.NumberFormat('ko-KR').format(num || 0);
-        }
-
-        function applyFilters() {
-            const startDate = document.getElementById('startDate').value;
-            const endDate = document.getElementById('endDate').value;
-            const selectedStore = document.getElementById('storeSelect').value;
-            const selectedCategory = document.getElementById('categorySelect').value;
-            const searchKeyword = document.getElementById('searchInput').value.toLowerCase().trim();
-
-            filteredDataset = dataset.filter(item => {
-                // Date range filter
-                if (startDate && item.일자 < startDate) return false;
-                if (endDate && item.일자 > endDate) return false;
-
-                // Store filter
-                if (selectedStore !== 'ALL' && item.점포 !== selectedStore) return false;
-
-                // Category filter
-                if (selectedCategory !== 'ALL' && item.카테고리 !== selectedCategory) return false;
-
-                // Search keyword
-                if (searchKeyword) {
-                    const matchName = item.상품명.toLowerCase().includes(searchKeyword);
-                    const matchCode = item.상품코드.toLowerCase().includes(searchKeyword);
-                    if (!matchName && !matchCode) return false;
-                }
-
-                return true;
-            });
-
-            currentPage = 1;
-            updateDashboardMetrics();
-            renderCharts();
-            renderTable();
-        }
-
-        function updateDashboardMetrics() {
-            const totalRevenue = filteredDataset.reduce((sum, d) => sum + d.매출액, 0);
-            const totalDiscount = filteredDataset.reduce((sum, d) => sum + d.할인액, 0);
-            const totalQty = filteredDataset.reduce((sum, d) => sum + d.판매수량, 0);
-            const totalCount = filteredDataset.length;
-            const promoCount = filteredDataset.filter(d => d.행사적용 === 'Y').length;
-
-            const avgQty = totalCount > 0 ? (totalQty / totalCount).toFixed(1) : 0;
-            const avgTicket = totalCount > 0 ? Math.round(totalRevenue / totalCount) : 0;
-            const promoRatio = totalCount > 0 ? ((promoCount / totalCount) * 100).toFixed(1) : 0;
-
-            document.getElementById('kpiTotalRevenue').textContent = `${formatNumber(totalRevenue)}원`;
-            document.getElementById('kpiRevenueSub').textContent = `총 할인액: ${formatNumber(totalDiscount)}원`;
-
-            document.getElementById('kpiTotalQty').textContent = `${formatNumber(totalQty)}개`;
-            document.getElementById('kpiAvgQty').textContent = `건당 평균: ${avgQty}개`;
-
-            document.getElementById('kpiTotalTransactions').textContent = `${formatNumber(totalCount)}건`;
-            document.getElementById('kpiAvgTicket').textContent = `건당 평균: ${formatNumber(avgTicket)}원`;
-
-            document.getElementById('kpiPromoRatio').textContent = `${promoRatio}%`;
-            document.getElementById('kpiPromoCount').textContent = `행사 건수: ${formatNumber(promoCount)}건`;
-        }
-
-        function renderCharts() {
-            renderDailyTrendChart();
-            renderCategoryChart();
-            renderTopProductsChart();
-            renderStoreChart();
-        }
-
-        // 1. Daily Trend Chart
-        function renderDailyTrendChart() {
-            const ctx = document.getElementById('dailyTrendChart').getContext('2d');
-            
-            // Group sales by date
-            const dailyData = {};
-            filteredDataset.forEach(d => {
-                dailyData[d.일자] = (dailyData[d.일자] || 0) + d.매출액;
-            });
-
-            const labels = Object.keys(dailyData).sort();
-            const values = labels.map(l => dailyData[l]);
-
-            if (chartInstances.dailyTrend) chartInstances.dailyTrend.destroy();
-
-            chartInstances.dailyTrend = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: '매출액 (원)',
-                        data: values,
-                        borderColor: '#4f46e5',
-                        backgroundColor: 'rgba(79, 70, 229, 0.1)',
-                        fill: true,
-                        tension: 0.35,
-                        pointBackgroundColor: '#4f46e5',
-                        pointRadius: 4,
-                        pointHoverRadius: 6
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                            callbacks: {
-                                label: (ctx) => ` 매출액: ${formatNumber(ctx.raw)}원`
-                            }
-                        }
-                    },
-                    scales: {
-                        x: {
-                            grid: { display: false },
-                            ticks: { font: { size: 11 } }
-                        },
-                        y: {
-                            grid: { color: '#f1f5f9' },
-                            ticks: {
-                                font: { size: 11 },
-                                callback: (val) => `${val / 10000}만`
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
-        // 2. Category Share Chart
-        function renderCategoryChart() {
-            const ctx = document.getElementById('categoryChart').getContext('2d');
-            
-            const categoryData = {};
-            filteredDataset.forEach(d => {
-                categoryData[d.카테고리] = (categoryData[d.카테고리] || 0) + d.매출액;
-            });
-
-            const labels = Object.keys(categoryData);
-            const values = labels.map(l => categoryData[l]);
-
-            if (chartInstances.category) chartInstances.category.destroy();
-
-            chartInstances.category = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        data: values,
-                        backgroundColor: ['#6366f1', '#10b981', '#f59e0b', '#ec4899', '#8b5cf6', '#06b6d4'],
-                        borderWidth: 2,
-                        borderColor: '#ffffff'
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'bottom',
-                            labels: { boxWidth: 12, font: { size: 11 } }
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: (ctx) => ` ${ctx.label}: ${formatNumber(ctx.raw)}원`
-                            }
-                        }
-                    },
-                    cutout: '65%'
-                }
-            });
-        }
-
-        // 3. Top Products Chart
-        function renderTopProductsChart() {
-            const ctx = document.getElementById('topProductsChart').getContext('2d');
-
-            const productData = {};
-            filteredDataset.forEach(d => {
-                productData[d.상품명] = (productData[d.상품명] || 0) + d.매출액;
-            });
-
-            const sortedProducts = Object.entries(productData)
-                .sort((a, b) => b[1] - a[1])
-                .slice(0, 5);
-
-            const labels = sortedProducts.map(p => p[0]);
-            const values = sortedProducts.map(p => p[1]);
-
-            if (chartInstances.topProducts) chartInstances.topProducts.destroy();
-
-            chartInstances.topProducts = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: '매출액',
-                        data: values,
-                        backgroundColor: '#10b981',
-                        borderRadius: 8
-                    }]
-                },
-                options: {
-                    indexAxis: 'y',
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                            callbacks: {
-                                label: (ctx) => ` 매출액: ${formatNumber(ctx.raw)}원`
-                            }
-                        }
-                    },
-                    scales: {
-                        x: {
-                            grid: { color: '#f1f5f9' },
-                            ticks: { callback: (val) => `${val / 10000}만` }
-                        },
-                        y: { grid: { display: false } }
-                    }
-                }
-            });
-        }
-
-        // 4. Store Comparison Chart
-        function renderStoreChart() {
-            const ctx = document.getElementById('storeChart').getContext('2d');
-
-            const storeData = {};
-            filteredDataset.forEach(d => {
-                storeData[d.점포] = (storeData[d.점포] || 0) + d.매출액;
-            });
-
-            const labels = Object.keys(storeData);
-            const values = labels.map(l => storeData[l]);
-
-            if (chartInstances.store) chartInstances.store.destroy();
-
-            chartInstances.store = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: '점포 매출액',
-                        data: values,
-                        backgroundColor: '#3b82f6',
-                        borderRadius: 8
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                            callbacks: {
-                                label: (ctx) => ` 매출액: ${formatNumber(ctx.raw)}원`
-                            }
-                        }
-                    },
-                    scales: {
-                        x: { grid: { display: false } },
-                        y: {
-                            grid: { color: '#f1f5f9' },
-                            ticks: { callback: (val) => `${val / 10000}만` }
-                        }
-                    }
-                }
-            });
-        }
-
-        function renderTable() {
-            const tbody = document.getElementById('dataTableBody');
-            const totalCount = filteredDataset.length;
-
-            if (totalCount === 0) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="10" class="py-8 text-center text-slate-400">
-                            <i class="fa-solid fa-folder-open text-2xl mb-2 block"></i>
-                            조회된 데이터가 없습니다.
-                        </td>
-                    </tr>
-                `;
-                document.getElementById('tableInfo').textContent = '총 0개 항목';
-                document.getElementById('pageIndicator').textContent = '0 / 0';
-                document.getElementById('prevPageBtn').disabled = true;
-                document.getElementById('nextPageBtn').disabled = true;
-                return;
-            }
-
-            const totalPages = Math.ceil(totalCount / pageSize);
-            currentPage = Math.min(currentPage, totalPages);
-
-            const startIndex = (currentPage - 1) * pageSize;
-            const endIndex = Math.min(startIndex + pageSize, totalCount);
-            const pageData = filteredDataset.slice(startIndex, endIndex);
-
-            tbody.innerHTML = pageData.map(row => `
-                <tr class="hover:bg-indigo-50/40 transition-colors">
-                    <td class="py-3 px-4 font-mono font-medium text-slate-700">${row.일자}</td>
-                    <td class="py-3 px-4 font-semibold text-slate-800">${row.점포}</td>
-                    <td class="py-3 px-4">
-                        <span class="inline-block bg-slate-100 text-slate-600 px-2 py-0.5 rounded text-[11px] font-medium">${row.카테고리}</span>
-                    </td>
-                    <td class="py-3 px-4 font-mono text-slate-500">${row.상품코드}</td>
-                    <td class="py-3 px-4 font-medium text-slate-900">${row.상품명}</td>
-                    <td class="py-3 px-4 text-right font-medium">${formatNumber(row.판매수량)}</td>
-                    <td class="py-3 px-4 text-right text-slate-600">${formatNumber(row.정상단가)}원</td>
-                    <td class="py-3 px-4 text-right text-rose-500">${row.할인액 > 0 ? '-' + formatNumber(row.할인액) + '원' : '0원'}</td>
-                    <td class="py-3 px-4 text-right font-bold text-indigo-600">${formatNumber(row.매출액)}원</td>
-                    <td class="py-3 px-4 text-center">
-                        ${row.행사적용 === 'Y' 
-                            ? '<span class="bg-amber-100 text-amber-800 font-semibold px-2 py-0.5 rounded-full text-[10px]">행사중</span>' 
-                            : '<span class="text-slate-400 text-[11px]">-</span>'}
-                    </td>
+        <!-- Strategy Pivot Card (Before vs After) -->
+        <div class="pivot-comparison-card">
+          <div class="pivot-header">
+            <span class="pivot-badge">STRATEGY PIVOT</span>
+            <h3>고객 중심 피벗 (공급자 중심 → 고객 자율 선택)</h3>
+          </div>
+          <div class="pivot-table-wrap">
+            <table class="pivot-table">
+              <thead>
+                <tr>
+                  <th>구분</th>
+                  <th>기존 (AS-IS)</th>
+                  <th>피벗 후 (TO-BE)</th>
                 </tr>
-            `).join('');
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>묶음 방식</strong></td>
+                  <td>공급자 강제 묶음<br>(샐러드랩 1 + 덮밥 1)</td>
+                  <td class="to-be-cell"><strong>고객 자율 선택</strong><br>(3종 중 2개 자유 선택)</td>
+                </tr>
+                <tr>
+                  <td><strong>가격대</strong></td>
+                  <td>11,000원 대 (부담 발생)</td>
+                  <td class="to-be-cell"><strong>전 조합 9천원대</strong><br>(20% 즉시 할인)</td>
+                </tr>
+                <tr>
+                  <td><strong>1끼 환산가</strong></td>
+                  <td>5,500원 ~ 6,000원</td>
+                  <td class="to-be-cell"><strong>4,000원대 실속 실현</strong></td>
+                </tr>
+                <tr>
+                  <td><strong>타깃 충족</strong></td>
+                  <td>1인 고객의 식단 불일치</td>
+                  <td class="to-be-cell"><strong>식단/든든/가성비 100% 충족</strong></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </div>
 
-            document.getElementById('tableInfo').textContent = `총 ${formatNumber(totalCount)}개 중 ${startIndex + 1} - ${endIndex} 표시`;
-            document.getElementById('pageIndicator').textContent = `${currentPage} / ${totalPages}`;
-            
-            document.getElementById('prevPageBtn').disabled = currentPage === 1;
-            document.getElementById('nextPageBtn').disabled = currentPage === totalPages;
-        }
+    <!-- ============================================================== -->
+    <!-- VIEW 3: FINANCIAL & BEP SIMULATOR (재무 및 손익분기점 분석)    -->
+    <!-- ============================================================== -->
+    <div class="view-content" id="view-financial-bep">
+      <section class="bep-view-section">
+        <div class="section-heading">
+          <span class="section-sub">Strict Budget & BEP Model</span>
+          <h2 class="section-title">재무 분석 및 손익분기점(BEP) 시뮬레이터</h2>
+          <p class="section-caption">총 집행 예산 200,000원 엄격 통제 하에 순증 공헌이익과 손익분기점을 시뮬레이션합니다.</p>
+        </div>
 
-        function setupEventListeners() {
-            // Apply filter button
-            document.getElementById('applyFilterBtn').addEventListener('click', applyFilters);
+        <!-- Budget Breakdown Table -->
+        <div class="budget-card">
+          <h3 class="budget-title">💰 프로모션 총 집행 예산 (200,000원 엄격 통제)</h3>
+          <div class="budget-list">
+            <div class="b-item">
+              <div class="b-info">
+                <strong>고객 20% 할인 보전 지원금</strong>
+                <span>평균 할인액 2,380원 × 일 6세트 × 14일 (84세트)</span>
+              </div>
+              <span class="b-cost">170,000원</span>
+            </div>
+            <div class="b-item">
+              <div class="b-info">
+                <strong>냉장 매대 쇼케이스 스윙어 및 띠지</strong>
+                <span>쇼케이스 전면 부착 2세트 (특가 안내)</span>
+              </div>
+              <span class="b-cost">18,000원</span>
+            </div>
+            <div class="b-item">
+              <div class="b-info">
+                <strong>골든존 형광 아크릴 네임택</strong>
+                <span>3종 상품 가격표 부착용 형광 네임택</span>
+              </div>
+              <span class="b-cost">12,000원</span>
+            </div>
+            <div class="b-item">
+              <div class="b-info">
+                <strong>계산대 POS 화면 배너</strong>
+                <span>자체 제작 시스템 송출 (추가 비용 0원)</span>
+              </div>
+              <span class="b-cost">0원</span>
+            </div>
+            <div class="b-item total-item">
+              <div class="b-info">
+                <strong>총 집행 예산 합계</strong>
+                <span>예산 상한 100% 준수 (초과 원천 차단)</span>
+              </div>
+              <strong class="b-total">200,000원</strong>
+            </div>
+          </div>
+        </div>
 
-            // Search input live filtering
-            document.getElementById('searchInput').addEventListener('input', applyFilters);
+        <!-- Interactive BEP Simulator Slider -->
+        <div class="bep-simulator-box">
+          <h3 class="sim-box-title">🎛️ 실시간 판매량 손익분기점(BEP) 시뮬레이터</h3>
+          <p class="sim-box-desc">행사 14일간 총 판매 세트 수를 조절하여 BEP 도달률 및 예상 순증 공헌이익을 확인하세요.</p>
 
-            // Pagination Controls
-            document.getElementById('prevPageBtn').addEventListener('click', () => {
-                if (currentPage > 1) {
-                    currentPage--;
-                    renderTable();
-                }
-            });
+          <div class="bep-slider-container">
+            <div class="slider-label-row">
+              <span>예상 총 판매 세트 수 (14일간)</span>
+              <span class="slider-val"><strong id="bepSetCount">84</strong> 세트 (일평균 6세트 완판)</span>
+            </div>
+            <input type="range" id="bepRange" min="20" max="140" value="84" step="2" class="bep-range-input">
+            <div class="range-markers">
+              <span>20세트 (부진)</span>
+              <span class="bep-marker-highlight">★ BEP (67세트)</span>
+              <span>84세트 (목표 완판)</span>
+              <span>140세트 (초과)</span>
+            </div>
+          </div>
 
-            document.getElementById('nextPageBtn').addEventListener('click', () => {
-                const totalPages = Math.ceil(filteredDataset.length / pageSize);
-                if (currentPage < totalPages) {
-                    currentPage++;
-                    renderTable();
-                }
-            });
+          <!-- Simulation Output Cards -->
+          <div class="bep-output-grid">
+            <div class="bep-out-card">
+              <span class="out-lbl">총 순증 매출액</span>
+              <span class="out-val" id="bepTotalSales">803,040원</span>
+            </div>
+            <div class="bep-out-card">
+              <span class="out-lbl">투입 총 예산</span>
+              <span class="out-val text-dark" id="bepTotalCost">200,000원</span>
+            </div>
+            <div class="bep-out-card highlight-out">
+              <span class="out-lbl">최종 증분이익 (Net Profit)</span>
+              <span class="out-val out-profit" id="bepNetProfit">+200,760원</span>
+            </div>
+            <div class="bep-out-card">
+              <span class="out-lbl">BEP 달성률</span>
+              <span class="out-val out-rate" id="bepRate">125% (흑자)</span>
+            </div>
+          </div>
 
-            // Quick Date Preset Buttons
-            document.getElementById('btnToday').addEventListener('click', () => {
-                const dates = dataset.map(d => d.일자).sort();
-                if (dates.length) {
-                    const latest = dates[dates.length - 1];
-                    document.getElementById('startDate').value = latest;
-                    document.getElementById('endDate').value = latest;
-                    applyFilters();
-                }
-            });
+          <!-- BEP Progress Meter -->
+          <div class="bep-meter-wrap">
+            <div class="bep-meter-header">
+              <span>손익분기점 돌파 게이지</span>
+              <span id="bepMeterText">BEP 돌파 흑자 구간</span>
+            </div>
+            <div class="bep-meter-bar">
+              <div class="bep-meter-fill" id="bepMeterFill" style="width: 80%;"></div>
+            </div>
+          </div>
 
-            document.getElementById('btn7Days').addEventListener('click', () => setQuickDateRange(7));
-            document.getElementById('btn30Days').addEventListener('click', () => setQuickDateRange(30));
-            document.getElementById('btnAll').addEventListener('click', () => {
-                setDateRangeLimits();
-                applyFilters();
-            });
+          <div class="halo-effect-note">
+            <span class="halo-icon">✨</span>
+            <div class="halo-text">
+              <strong>집객 효과 (Halo Effect) 추가 반영:</strong><br>
+              20% 할인 배너로 유입된 고객의 타 신선식품/음료 연관 구매로 실제 매장 공헌이익은 시뮬레이션 대비 <strong>+15~20% 추가 상승</strong>합니다.
+            </div>
+          </div>
+        </div>
 
-            // CSV File Upload Handler
-            document.getElementById('csvFileInput').addEventListener('change', handleFileUpload);
+        <!-- 5 Success KPIs Table -->
+        <div class="kpi-card">
+          <h3 class="kpi-title">🎯 프로모션 최종 성공 판단 기준 (KPI)</h3>
+          <div class="kpi-table-wrap">
+            <table class="kpi-table">
+              <thead>
+                <tr>
+                  <th>구분</th>
+                  <th>성공 기준 (Target)</th>
+                  <th>측정 및 검증 방식</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>최우선 지표</strong></td>
+                  <td class="kpi-highlight">최종 증분이익 0원 초과 (흑자)</td>
+                  <td>투입 예산 20만 원 대비 순증 매출 공헌이익 산출</td>
+                </tr>
+                <tr>
+                  <td><strong>매출 증대</strong></td>
+                  <td>대조군(리버·파크점) 대비 +10% 이상</td>
+                  <td>비행사 점포와의 DID (이중차분) 비교 분석</td>
+                </tr>
+                <tr>
+                  <td><strong>판매 수량</strong></td>
+                  <td>샐러드랩 판매량 +12% 이상</td>
+                  <td>역성장 1위(-9.38%) 품목의 집중 회복 점검</td>
+                </tr>
+                <tr>
+                  <td><strong>재고 통제</strong></td>
+                  <td>행사 3종 폐기율 3.0% 미만 유지</td>
+                  <td>일일 11:30 재고 점검 및 22:00 마감 폐기일지 작성</td>
+                </tr>
+                <tr>
+                  <td><strong>2차 확대</strong></td>
+                  <td>센트럴점 흑자 검증 시 【파크점】 우선 확대</td>
+                  <td>사후 14일간 매출 반락(Dip) 여부 추적 관찰 후 결정</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </div>
 
-            // Reset Sample Button
-            document.getElementById('resetSampleBtn').addEventListener('click', () => {
-                loadData(sampleRawData);
-                showToast("샘플 데이터로 초기화되었습니다.");
-            });
-        }
+  </main>
 
-        function setQuickDateRange(days) {
-            if (dataset.length === 0) return;
-            const dates = dataset.map(d => d.일자).sort();
-            const lastDate = new Date(dates[dates.length - 1]);
-            
-            const startDate = new Date(lastDate);
-            startDate.setDate(startDate.getDate() - (days - 1));
+  <!-- Sticky Bottom Quick Bar -->
+  <aside class="sticky-bottom-bar" id="stickyBottomBar">
+    <div class="bar-inner">
+      <div class="bar-summary">
+        <div class="bar-top">
+          <span class="bar-badge" id="barBadge">2개 담김 · 20% DC</span>
+          <span class="bar-meals" id="barMealPrice">1끼 4,840원</span>
+        </div>
+        <div class="bar-price-row">
+          <span class="bar-orig-price" id="barOrigPrice">12,100원</span>
+          <span class="bar-final-price" id="barFinalPrice">9,680원</span>
+        </div>
+      </div>
+      <button class="bar-action-btn" id="btnStickyAction">
+        <span>모바일 바코드</span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </button>
+    </div>
+  </aside>
 
-            const formatDateStr = (d) => {
-                const y = d.getFullYear();
-                const m = String(d.getMonth() + 1).padStart(2, '0');
-                const day = String(d.getDate()).padStart(2, '0');
-                return `${y}-${m}-${day}`;
-            };
+  <!-- Barcode Modal Popup -->
+  <div class="modal-overlay" id="barcodeModal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="modal-content">
+      <button class="modal-close-btn" id="btnCloseModal" aria-label="닫기">&times;</button>
+      <div class="modal-header">
+        <span class="modal-emart-logo">emart</span>
+        <h3 class="modal-title">센트럴점 매장 할인 바코드</h3>
+        <p class="modal-desc">식품관 냉장 매대 골든존에서 상품 2종을 골라 계산대에서 제시하세요!</p>
+      </div>
 
-            document.getElementById('startDate').value = formatDateStr(startDate);
-            document.getElementById('endDate').value = formatDateStr(lastDate);
-            applyFilters();
-        }
+      <div class="modal-ticket-card">
+        <div class="ticket-header">
+          <span class="ticket-tag">센트럴점 단독 냉장 간편식</span>
+          <span class="ticket-discount">20% 즉시할인</span>
+        </div>
+        <div class="ticket-selected-items" id="ticketItemsSummary">
+          • 훈제오리 샐러드랩 1개<br>
+          • 한끼 소불고기덮밥 1개
+        </div>
+        <div class="ticket-price-info">
+          <div class="t-row">
+            <span>정상 합계</span>
+            <span id="ticketOrig">12,100원</span>
+          </div>
+          <div class="t-row t-highlight">
+            <span>20% 적용가</span>
+            <strong id="ticketFinal">9,680원</strong>
+          </div>
+        </div>
 
-        // CSV Upload Logic using PapaParse
-        function handleFileUpload(e) {
-            const file = e.target.files[0];
-            if (!file) return;
+        <!-- Simulated Barcode Graphic -->
+        <div class="barcode-graphic-box">
+          <div class="barcode-lines">
+            <span class="b-line w-2"></span><span class="b-line w-1"></span><span class="b-line w-3"></span>
+            <span class="b-line w-1"></span><span class="b-line w-4"></span><span class="b-line w-2"></span>
+            <span class="b-line w-1"></span><span class="b-line w-3"></span><span class="b-line w-2"></span>
+            <span class="b-line w-4"></span><span class="b-line w-1"></span><span class="b-line w-2"></span>
+            <span class="b-line w-3"></span><span class="b-line w-2"></span><span class="b-line w-1"></span>
+            <span class="b-line w-3"></span><span class="b-line w-4"></span><span class="b-line w-1"></span>
+            <span class="b-line w-2"></span><span class="b-line w-3"></span><span class="b-line w-1"></span>
+          </div>
+          <div class="barcode-number">2026-1021-CENTRAL-20OFF</div>
+        </div>
+        <p class="ticket-caution">* 매일 12:00 선착순 타임어택 한정 수량 (POS 일일 6세트 자동 통제)</p>
+      </div>
 
-            Papa.parse(file, {
-                header: true,
-                skipEmptyLines: true,
-                encoding: "EUC-KR",
-                complete: function(results) {
-                    if (results.data && results.data.length > 0) {
-                        loadData(results.data);
-                        showToast(`${results.data.length}건의 데이터를 성공적으로 불러왔습니다.`);
-                    } else {
-                        showToast("파일 내 데이터가 없거나 형식이 바르지 않습니다.", "error");
-                    }
-                },
-                error: function(err) {
-                    Papa.parse(file, {
-                        header: true,
-                        skipEmptyLines: true,
-                        encoding: "UTF-8",
-                        complete: function(results) {
-                            if (results.data && results.data.length > 0) {
-                                loadData(results.data);
-                                showToast(`${results.data.length}건의 데이터를 가져왔습니다.`);
-                            }
-                        }
-                    });
-                }
-            });
-        }
+      <div class="modal-action-row">
+        <button class="modal-btn-primary" id="btnModalConfirm">확인 (화면 캡처하여 매장에서 사용)</button>
+      </div>
+    </div>
+  </div>
 
-        function showToast(msg, type = "info") {
-            const toast = document.getElementById('toast');
-            const messageEl = document.getElementById('toastMessage');
-            const iconEl = document.getElementById('toastIcon');
+  <!-- Toast Notification -->
+  <div class="toast-popup" id="toastMessage">
+    <span class="toast-icon">✅</span>
+    <span class="toast-text" id="toastText">링크가 복사되었습니다!</span>
+  </div>
 
-            messageEl.textContent = msg;
-            if (type === "error") {
-                iconEl.className = "fa-solid fa-circle-exclamation text-rose-400 text-sm";
-            } else {
-                iconEl.className = "fa-solid fa-circle-check text-emerald-400 text-sm";
-            }
+  <!-- Footer -->
+  <footer class="app-footer">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <strong>이마트 센트럴점</strong>
+        <span>데이터 리터러시 프로모션팀 | PLAN-20261014-FINAL</span>
+      </div>
+      <p class="footer-meta">
+        행사 기간: 2026.10.21(수) ~ 2026.11.03(화) (14일간, 매일 12:00 선착순)<br>
+        매장 위치: 센트럴역 연결 이마트 센트럴점 B1 식품관 냉장 골든존 매대<br>
+        통제 기준: 총 집행 예산 20만 원 엄격 준수 | 대조군: 리버점, 파크점
+      </p>
+      <p class="footer-copy">© 2026 E-MART CENTRAL STORE. DATA-DRIVEN PROMOTION PROJECT.</p>
+    </div>
+  </footer>
 
-            toast.classList.remove('translate-y-20', 'opacity-0');
-            setTimeout(() => {
-                toast.classList.add('translate-y-20', 'opacity-0');
-            }, 3000);
-        }
-    </script>
+  <script src="app.js"></script>
 </body>
+
 </html>
